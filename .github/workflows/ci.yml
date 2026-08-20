@@ -2,36 +2,36 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
 
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.4'
-        extensions: mbstring, xml, ctype, iconv, json, pdo, sqlite, pdo_sqlite
-        coverage: pcov
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: mbstring, xml, ctype, iconv, json, pdo, sqlite, pdo_sqlite
+          coverage: pcov
 
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-    - name: Install Dependencies
-      run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Install Dependencies
+        run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-    - name: Generate key
-      run: php artisan key:generate
+      - name: Generate key
+        run: php artisan key:generate
 
-    - name: Execute Tests (Pest Extreme Coverage)
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: :memory:
-      run: ./vendor/bin/pest --coverage --min=100
+      - name: Execute Tests (Pest Extreme Coverage)
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: :memory
+        run: ./vendor/bin/pest --coverage --min=100
