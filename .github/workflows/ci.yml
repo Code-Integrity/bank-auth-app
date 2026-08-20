@@ -33,6 +33,6 @@ jobs:
       - name: Execute Tests (Pest Extreme Coverage)
         env:
           DB_CONNECTION: sqlite
-          DB_DATABASE: :memory
+          DB_DATABASE: ":memory:"
           APP_KEY: base64:tExTeStKeYfOrBaNkLeVeLaUtHeNtIcAtIoN123=
         run: ./vendor/bin/pest --coverage --min=100
