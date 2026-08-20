@@ -21,11 +21,22 @@ jobs:
           extensions: mbstring, xml, ctype, iconv, json, pdo, sqlite, pdo_sqlite
           coverage: pcov
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-      - name: Install Dependencies
+      - name: Install PHP Dependencies
         run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Install NPM Dependencies & Build Assets
+        run: |
+          npm echo "prefix=~/.npm" >> ~/.npmrc
+          npm ci
+          npm run build
 
       - name: Generate key
         run: php artisan key:generate
