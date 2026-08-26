@@ -8,10 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Cache\RateLimiting\Limit;
 use Carbon\Carbon;
 
-beforeEach(function () {
-    // 各テスト実行前にデータベースをクリア（インメモリSQLite仕様）
-    $this->artisan('migrate:fresh');
-});
 
 test('未ログインユーザーはパスワード期限チェックをスキップしてトップページにアクセスできる', function () {
     $response = $this->get('/');
