@@ -3,7 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\EnsureTwoFactorEnabled; // ★最上部にインポートを追加
+use App\Http\Middleware\EnsureTwoFactorEnabled;
+use App\Http\Middleware\EnsurePasswordNotExpired; // インポートをスッキリ整頓
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,11 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // ★webグループ（ブラウザからの一般アクセス全体）にミドルウェアを登録
+        // ★ 1つのwithMiddlewareブロックの中に、2つのミドルウェアを順番に登録します
         $middleware->web(append: [
-            EnsureTwoFactorEnabled::class,
+            EnsureTwoFactorEnabled::class,          // 1. 先に2FAのチェック
+            EnsurePasswordNotExpired::class,       // 2. 次にパスワード有効期限のチェック
         ]);
-    })
+    }) // ← ここで綺麗に閉じます
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
