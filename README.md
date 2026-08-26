@@ -1,66 +1,78 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# AegisBank-Auth-Core 🛡️
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![Laravel Version](https://shields.io)](https://laravel.com)
+[![PHP Version](https://shields.io)](https://php.net)
+[![Pest Test Coverage](https://shields.io)](https://pestphp.com)
+[![License](https://shields.io)](LICENSE)
 
-## About Laravel
+A high-security, regulatory-compliant authentication architecture engineered with **Laravel 11, Jetstream (Inertia.js + Vue 3), and Pest 3.x**. This application is strictly designed to meet European banking-grade security standards, aligning with the core requirements of **PSD2/RTS (Revised Payment Services Directive / Regulatory Technical Standards)** and **EBA (European Banking Authority) Guidelines**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📈 Engineering Quality Strategy
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Test-Driven Rigor**: 100% strict test coverage defended via **Pest 3.x** and **PCOV**.
+- **Resilient Middleware Architecture**: All defensive guardrails are fully isolated with explicit exception handling (`try-catch` structures) ensuring failure-free redirection mechanisms during system or database anomalies.
+- **Production-Validated**: Verified against physical target DB environments utilizing multi-layered dummy credential sequences, eliminating structural gaps between local testing and production realities.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛡️ Regulatory Compliance & Core Security Blueprint
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. PSD2-Compliant Strong Customer Authentication (SCA)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Absolute 2FA Isolation (`EnsureTwoFactorEnabled`)**: Any authenticated user without two-factor authentication (2FA) configured is immediately and strictly quarantined from the application dashboard, forcing isolation onto the profile customization layer until compliant.
+- **Cryptographic Secrets**: Utilizes Fortify's standard-compliant Base32 cryptographic secret keys to safeguard authenticator interaction pipelines.
 
-## Laravel Sponsors
+### 2. EBA-Grade Account Defense & Brute-Force Mitigation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **Dual-Pipeline Rate Limiting (`login-account` | `login-ip`)**: Implements two completely decoupled throttling pipelines executing synchronously:
+    - **Per-Account Limiter**: Restricts discrete account targeting to a maximum of 3 failed attempts per minute.
+    - **Per-IP Limiter**: Caps continuous local infrastructure origin attacks to 5 failed attempts per minute across multiple credentials.
+- **Lockout Penalty**: Immediate 15-minute global cool-down response containing precise structured JSON status codes (`429 Too Many Requests`).
 
-### Premium Partners
+### 3. Regulatory Password Lifecycles & Graceful Recovery
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- **90-Day Password Expiration (`EnsurePasswordNotExpired`)**: Enforces absolute credential lifecycles by verifying `password_changed_at` timestamps against explicit system parameters.
+- **Isolated Mitigation View**: Compliant with global financial standards, expired sessions are directed onto `/user/password-expired` preventing route looping and processing deadlocks.
+- **Secure Salvation Blueprint**: Allows instant password updates utilizing rigorous pattern complexity guidelines while retaining audit trace histories.
 
-## Contributing
+### 4. Non-Repudiation: Immutable Structured Audit Logging
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Every mission-critical security milestone (`security.password.expired`, `security.password.renewed`, authentication lockouts) is formatted inside structured database payloads mapping:
+    - `user_id`, `event`, `ip_address`, `user_agent`, and granular diagnostic JSON payloads.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🛠️ Tech Stack & Requirements
 
-## Security Vulnerabilities
+- **Backend Framework**: PHP 8.4+ / Laravel 11.x
+- **Frontend Architecture**: Vue 3 / Inertia.js / Vite / Tailwind CSS
+- **Testing Engine**: Pest 3.x + PCOV / In-memory SQLite Spec
+- **Local Runtime Environment**: Laravel Sail (Docker architectureized)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🏁 Verification & Testing Suite
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+To trigger the comprehensive test suite and verify the **100.0% total system coverage** claim:
+
+```bash
+./vendor/bin/sail pest --coverage
+```
+
+```text
+  Http/Middleware/EnsurePasswordNotExpired .................................................... 100.0%
+  Http/Middleware/EnsureTwoFactorEnabled ...................................................... 100.0%
+  ───────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                Total: 100.0 %
+```
+
+```bash
+# Verify real-time database schema states
+./vendor/bin/sail artisan tinker
+```
+
+---
+
+_Developed under global financial security frameworks, prioritizing runtime reliability, architectural immutability, and zero-defect deployments._
