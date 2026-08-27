@@ -43,9 +43,12 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 EXPOSE 8080
 
-# 起動用エントリーポイントスクリプトの作成（本番DBの完全自動生成＆データ注入を内包）
+# 起動用エントリーポイントスクリプトの作成（本番環境用パーミッション完全固定版）
 RUN echo '#!/bin/sh' > /usr/local/bin/start.sh \
+    && echo 'mkdir -p /var/www/html/database' >> /usr/local/bin/start.sh \
     && echo 'touch /var/www/html/database/database.sqlite' >> /usr/local/bin/start.sh \
+    && echo 'chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database' >> /usr/local/bin/start.sh \
+    && echo 'chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database' >> /usr/local/bin/start.sh \
     && echo 'php artisan migrate:fresh --seed --force' >> /usr/local/bin/start.sh \
     && echo 'php artisan config:cache' >> /usr/local/bin/start.sh \
     && echo 'php artisan route:cache' >> /usr/local/bin/start.sh \
@@ -54,3 +57,4 @@ RUN echo '#!/bin/sh' > /usr/local/bin/start.sh \
     && chmod +x /usr/local/bin/start.sh
 
 CMD ["/usr/local/bin/start.sh"]
+
