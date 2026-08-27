@@ -30,7 +30,7 @@ Route::middleware([
 
     // 🛡️ パスワード有効期限切れ専用画面（表示: GET）
     Route::get('/user/password-expired', function () {
-        return Inertia::render('Profile/PasswordExpired');
+        return Inertia::render('Auth/PasswordExpired'); // ⭕ Profile/ から Auth/ へ変更
     })->name('user.password-expired');
 
     // 🛡️ パスワード更新処理（実行: POST）★ ここに新しく追加します
