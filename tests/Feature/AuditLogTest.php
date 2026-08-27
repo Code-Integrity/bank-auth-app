@@ -31,7 +31,7 @@ test('認証済みで2FA有効なユーザーは自身の監査ログ画面に�
         ->assertStatus(200)
         ->assertInertia(
             fn(Assert $page) => $page
-                ->component('Profile/AuditLogs') // 👈 'User/AuditLogs' から修正
+                ->component('Auth/AuditLogs')
                 ->has('logs.data', 2)
         );
 });
@@ -56,7 +56,7 @@ test('他人の監査ログは絶対に表示されない（マルチテナシ�
         ->get('/user/audit-logs')
         ->assertInertia(
             fn(Assert $page) => $page
-                ->component('Profile/AuditLogs') // 👈 'User/AuditLogs' から修正
+                ->component('Auth/AuditLogs')
                 ->has('logs.data', 1)
                 ->where('logs.data.0.event', 'my.action')
                 ->whereNot('logs.data.0.event', 'secret.action')
@@ -93,7 +93,7 @@ test('監査ログは最新順に並び10件でページネーションされる
         ->get('/user/audit-logs')
         ->assertInertia(
             fn(Assert $page) => $page
-                ->component('Profile/AuditLogs')
+                ->component('Auth/AuditLogs') // ⭕ Profile/ から Auth/ へ変更
                 ->has('logs.data', 10) // 👈 15から10件に変更（コントローラーの実装と一致）
                 ->has('logs.links')
         );
@@ -119,7 +119,7 @@ test('監査ログの全イベント種別を網羅してコントローラー�
         ->assertStatus(200)
         ->assertInertia(
             fn(Assert $page) => $page
-                ->component('Profile/AuditLogs')
+                ->component('Auth/AuditLogs') // ⭕ Profile/ から Auth/ へ変更
                 ->has('logs.data', 4) // 4件すべてが正常に返っていること
         );
 });
