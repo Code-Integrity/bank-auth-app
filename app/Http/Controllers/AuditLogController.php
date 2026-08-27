@@ -25,7 +25,7 @@ class AuditLogController extends Controller
                 'created_at' => $log->created_at->isoFormat('YYYY-MM-DD HH:mm:ss'),
             ]);
 
-        return Inertia::render('Profile/AuditLogs', [
+        return Inertia::render('Auth/AuditLogs', [
             'logs' => $logs
         ]);
     }
