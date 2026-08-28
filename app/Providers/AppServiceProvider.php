@@ -47,10 +47,27 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // @codeCoverageIgnoreStart
-        // 【超重要】本番環境環境、またはRender上では、URLスキームおよび全てのリダイレクト宛先をHTTPSに強制ロックする
-        if (config('app.env') === 'production' || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-            URL::forceScheme('https');
-        }
+        // ログイン成功時のレスポンスをAegisBankの厳格な防衛仕様にジャック（上書き登録）
+        $this->app->singleton(LoginResponseContract::class, function () {
+            return new class implements LoginResponseContract {
+                public function toResponse($request)
+                {
+                    $user = Auth::user();
+
+                    // パスワード変更日時を取得し、確実に「Carbonインスタンス」に変換
+                    $passwordChangedAt = $user->password_changed_at;
+                    $lastChanged = $passwordChangedAt ? Carbon::parse($passwordChangedAt) : now();
+
+                    // 90日（以上）経過している場合は、Jetstreamの通常遷移を完全遮断し、隔離UIへ強制HTMLリダイレクト
+                    if ($lastChanged->addDays(90)->isPast()) {
+                        return \Inertia\Inertia::location(route('user.password-expired'));
+                    }
+
+                    // 通常ユーザーは本来のダッシュボード（/dashboard）へ
+                    return redirect()->intended(config('fortify.home'));
+                }
+            };
+        });
         // @codeCoverageIgnoreEnd
 
         // 🛡️ レイヤー1: アカウント別のログイン試行制限（1分間に3回）
