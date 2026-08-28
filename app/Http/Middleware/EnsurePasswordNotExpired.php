@@ -52,8 +52,9 @@ class EnsurePasswordNotExpired
                 \Log::error('Audit log failed during password expiration: ' . $e->getMessage());
             }
 
-            // 専用のパスワード更新画面へ強制隔離
-            return redirect()->route('user.password-expired');
+            // ❌ 修正前: return redirect()->route('user.password-expired');
+            // ⭕ 修正後: Inertiaの非同期ボイコットを破壊し、ブラウザに強制的にページ丸ごとリダイレクトをかけさせる
+            return \Inertia\Inertia::location(route('user.password-expired'));
         }
 
         return $next($request);
