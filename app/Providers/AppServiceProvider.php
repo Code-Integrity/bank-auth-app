@@ -18,8 +18,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // @codeCoverageIgnoreStart
-        // 本番環境、またはAPP_URLがhttpsで始まっている場合は、強制的にHTTPSスキームを使用する
-        if ($this->app->environment('production') || (config('app.url') && str_starts_with(config('app.url'), 'https://'))) {
+        // 【超重要】本番環境環境、またはRender上では、URLスキームおよび全てのリダイレクト宛先をHTTPSに強制ロックする
+        if (config('app.env') === 'production' || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
             URL::forceScheme('https');
         }
         // @codeCoverageIgnoreEnd
