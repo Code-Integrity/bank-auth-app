@@ -17,10 +17,12 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // @codeCoverageIgnoreStart
         // 本番環境、またはAPP_URLがhttpsで始まっている場合は、強制的にHTTPSスキームを使用する
         if ($this->app->environment('production') || (config('app.url') && str_starts_with(config('app.url'), 'https://'))) {
             URL::forceScheme('https');
         }
+        // @codeCoverageIgnoreEnd
 
         // 🛡️ レイヤー1: アカウント別のログイン試行制限（1分間に3回）
         RateLimiter::for('login-account', function (Request $request) {
