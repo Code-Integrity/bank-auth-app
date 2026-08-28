@@ -56,9 +56,10 @@ RUN echo '#!/bin/sh' > /usr/local/bin/start.sh \
     && echo 'chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database' >> /usr/local/bin/start.sh \
     && echo 'chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database' >> /usr/local/bin/start.sh \
     && echo 'php artisan migrate:fresh --seed --force' >> /usr/local/bin/start.sh \
-    && echo 'php artisan config:cache' >> /usr/local/bin/start.sh \
-    && echo 'php artisan route:cache' >> /usr/local/bin/start.sh \
-    && echo 'php artisan view:cache' >> /usr/local/bin/start.sh \
+    && echo 'php artisan config:clear' >> /usr/local/bin/start.sh \
+    && echo 'php artisan route:clear' >> /usr/local/bin/start.sh \
+    && echo 'php artisan view:clear' >> /usr/local/bin/start.sh \
+    && echo 'php artisan cache:clear' >> /usr/local/bin/start.sh \
     && echo '/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf' >> /usr/local/bin/start.sh \
     && chmod +x /usr/local/bin/start.sh
 
