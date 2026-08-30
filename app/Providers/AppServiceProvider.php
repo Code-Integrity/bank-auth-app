@@ -61,7 +61,7 @@ class AppServiceProvider extends ServiceProvider
 class DemoLoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
-{
+    {
     $user = Auth::user();
     $passwordChangedAt = $user->password_changed_at;
     $lastChanged = $passwordChangedAt ? Carbon::parse($passwordChangedAt) : now();
