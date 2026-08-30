@@ -67,12 +67,19 @@ class DemoLoginResponse implements LoginResponseContract
         $passwordChangedAt = $user->password_changed_at;
         $lastChanged = $passwordChangedAt ? Carbon::parse($passwordChangedAt) : now();
 
-        // 90日（以上）経過している場合は、Jetstreamの通常遷移を完全遮断し、隔離UIへ強制HTMLリダイレクト
-        if ($lastChanged->addDays(90)->isPast()) {
-            return \Inertia\Inertia::location(route('user.password-expired'));
+        // 90日（以上）経過している場合の遷移先URLを決定
+        $redirectUrl = $lastChanged->addDays(90)->isPast()
+            ? route('user.password-expired')
+            : redirect()->intended(config('fortify.home'))->getTargetUrl();
+
+        // 💡 物理的迂回ルート：本番環境、またはXHR（非同期）リクエストの場合は、Status 200 JSONで遷移先URLをフロントに通知する
+        if ($request->wantsJson() || config('app.env') === 'production') {
+            return response()->json([
+                'redirect' => $redirectUrl,
+            ], 200);
         }
 
-        // 通常ユーザーは本来のダッシュボード（/dashboard）へ
-        return redirect()->intended(config('fortify.home'));
+        // ローカル環境等でのフォールバック（通常リダイレクト）
+        return redirect()->to($redirectUrl);
     }
 }
