@@ -61,17 +61,19 @@ class AppServiceProvider extends ServiceProvider
 class DemoLoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
-    {
-        // 1. 環境変数（https://onrender.com）を取得
-        $baseUrl = rtrim(config('app.url'), '/');
-        
-        // 2. 90日期限切れの隔離先URLを、絶対パス（https://.../user/password-expired）として確実に構築
-        $targetUrl = $baseUrl . '/user/password-expired';
+{
+    $user = Auth::user();
+    $passwordChangedAt = $user->password_changed_at;
+    $lastChanged = $passwordChangedAt ? Carbon::parse($passwordChangedAt) : now();
 
-        // ⚡【超・絶対安全弁】InertiaやJSONなどの複雑な判定をすべてゴミ箱に捨て、
-        // ブラウザに対して「何が何でも今すぐこの絶対URLへ強制移動しろ」という最強のHTMLリダイレクトを返します！
-        return redirect()->away($targetUrl);
+    // 90日経過している場合は隔離UIへ、通常時はダッシュボードへ安全にリダイレクト
+    if ($lastChanged->addDays(90)->isPast()) {
+        return redirect()->route('user.password-expired');
     }
+
+    return redirect()->intended(config('fortify.home'));
+}
+
 
         
     
