@@ -68,9 +68,9 @@ class DemoLoginResponse implements LoginResponseContract
 
         // 90日経過している場合は隔離UIへ、通常時はダッシュボードへ安全にリダイレクト
         if ($lastChanged->addDays(90)->isPast()) {
-        return redirect()->route('user.password-expired');
+            return redirect()->route('user.password-expired');
         }
 
-    return redirect()->intended(config('fortify.home'));
-    }    
+        return redirect()->intended(config('fortify.home'));
+     }    
 }
