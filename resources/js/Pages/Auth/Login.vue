@@ -69,12 +69,8 @@ defineProps({
                     Forgot your password?
                 </Link>
 
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Log in
+                <PrimaryButton class="ms-4" type="submit" onclick="this.form.submit()">
+                    LOG IN
                 </PrimaryButton>
             </div>
         </form>
