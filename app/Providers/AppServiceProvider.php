@@ -62,19 +62,15 @@ class DemoLoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
     {
-    $user = Auth::user();
-    $passwordChangedAt = $user->password_changed_at;
-    $lastChanged = $passwordChangedAt ? Carbon::parse($passwordChangedAt) : now();
+        $user = Auth::user();
+        $passwordChangedAt = $user->password_changed_at;
+        $lastChanged = $passwordChangedAt ? Carbon::parse($passwordChangedAt) : now();
 
-    // 90日経過している場合は隔離UIへ、通常時はダッシュボードへ安全にリダイレクト
-    if ($lastChanged->addDays(90)->isPast()) {
+        // 90日経過している場合は隔離UIへ、通常時はダッシュボードへ安全にリダイレクト
+        if ($lastChanged->addDays(90)->isPast()) {
         return redirect()->route('user.password-expired');
-    }
+        }
 
     return redirect()->intended(config('fortify.home'));
-}
-
-
-        
-    
+    }    
 }
