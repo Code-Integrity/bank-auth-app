@@ -21,10 +21,10 @@ defineProps({
             {{ status }}
         </div>
 
-        <!-- ⬇️ 変更後：JavaScriptの介入を100%排除し、ブラウザのネイティブ機能でLaravelに直接データを叩き込みます -->
-        <form method="POST" action="/login">
-            <!-- 🔄 27行目を以下に完全に書き換えます -->
-　　　　     <input type="hidden" name="_token" :value="$page.props.csrf_token">
+        <!-- 🔄 現在のフォーム開始タグを以下に書き換えます -->
+        <form method="POST" action="/login" data-inertia="false">
+            <!-- CSRFトークンはそのままで大丈夫です -->
+            <input type="hidden" name="_token" :value="$page.props.csrf_token">
 
             <div>
                 <InputLabel for="email" value="Email" />
