@@ -16,11 +16,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*', headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR | \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST | \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT | \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO | \Illuminate\Http\Request::HEADER_X_FORWARDED_AWS_ELB);
 
-        // 💡 【大逆転の安全弁】ログインURL（/login）に対するCSRFセキュリティチェックを強制的に免除します！
-        $middleware->validateCsrfTokens(except: [
-            'login',
-        ]);
-
         $middleware->web(append: [
             \App\Http\Middleware\EnsurePasswordNotExpired::class,
             \App\Http\Middleware\EnsureTwoFactorEnabled::class,
