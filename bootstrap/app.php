@@ -14,8 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
 
     ->withMiddleware(function (Middleware $middleware) {
-        // ⭕ 全てのプロキシ（*）と、全てのForwardedヘッダーを信頼する正しいLaravel 11の記述
-        $middleware->trustProxies(at: '*', headers: 0b11111);
+    
+        // 🛡️ クラウドプロキシ（Render）のHTTPSヘッダーを100%正しく認識させるための確定版
+        $middleware->trustProxies(at: '*', headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR | \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST | \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT | \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO | \Illuminate\Http\Request::HEADER_X_FORWARDED_AWS_ELB);
 
         // 1つのwithMiddlewareブロックの中に、2つのミドルウェアを順番に登録します
         $middleware->web(append: [
