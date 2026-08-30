@@ -18,10 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // 🛡️ クラウドプロキシ（Render）のHTTPSヘッダーを100%正しく認識させるための確定版
         $middleware->trustProxies(at: '*', headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR | \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST | \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT | \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO | \Illuminate\Http\Request::HEADER_X_FORWARDED_AWS_ELB);
 
-        // 1つのwithMiddlewareブロックの中に、2つのミドルウェアを順番に登録します
+        // ⭕ パスワード期限切れチェックを「一番最初」に発動させ、2FAチェックをその後に回します
         $middleware->web(append: [
-            EnsureTwoFactorEnabled::class,          // 1. 先に2FAのチェック
-            EnsurePasswordNotExpired::class,       // 2. 次にパスワード有効期限のチェック
+            \App\Http\Middleware\EnsurePasswordNotExpired::class, // 1. 先にパスワード期限をチェックして強制隔離！
+            \App\Http\Middleware\EnsureTwoFactorEnabled::class,    // 2. その後に2FAチェック
         ]);
     })
 
