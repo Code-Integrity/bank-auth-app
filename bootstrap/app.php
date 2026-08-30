@@ -14,14 +14,16 @@ return Application::configure(basePath: dirname(__DIR__))
     )
 
     ->withMiddleware(function (Middleware $middleware) {
-    
-        // 🛡️ クラウドプロキシ（Render）のHTTPSヘッダーを100%正しく認識させるための確定版
         $middleware->trustProxies(at: '*', headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR | \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST | \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT | \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO | \Illuminate\Http\Request::HEADER_X_FORWARDED_AWS_ELB);
 
-        // ⭕ パスワード期限切れチェックを「一番最初」に発動させ、2FAチェックをその後に回します
+        // 💡 【大逆転の安全弁】ログインURL（/login）に対するCSRFセキュリティチェックを強制的に免除します！
+        $middleware->validateCsrfTokens(except: [
+            'login',
+        ]);
+
         $middleware->web(append: [
-            \App\Http\Middleware\EnsurePasswordNotExpired::class, // 1. 先にパスワード期限をチェックして強制隔離！
-            \App\Http\Middleware\EnsureTwoFactorEnabled::class,    // 2. その後に2FAチェック
+            \App\Http\Middleware\EnsurePasswordNotExpired::class,
+            \App\Http\Middleware\EnsureTwoFactorEnabled::class,
         ]);
     })
 
