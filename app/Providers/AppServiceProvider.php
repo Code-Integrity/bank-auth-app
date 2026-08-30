@@ -62,24 +62,17 @@ class DemoLoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
     {
-        $user = Auth::user();
+        // 1. 環境変数（https://onrender.com）を取得
+        $baseUrl = rtrim(config('app.url'), '/');
+        
+        // 2. 90日期限切れの隔離先URLを、絶対パス（https://.../user/password-expired）として確実に構築
+        $targetUrl = $baseUrl . '/user/password-expired';
 
-        $passwordChangedAt = $user->password_changed_at;
-        $lastChanged = $passwordChangedAt ? Carbon::parse($passwordChangedAt) : now();
-
-        // 90日（以上）経過している場合の遷移先URLを決定
-        $redirectUrl = $lastChanged->addDays(90)->isPast()
-            ? route('user.password-expired')
-            : redirect()->intended(config('fortify.home'))->getTargetUrl();
-
-        // 💡 物理的迂回ルート：本番環境、またはXHR（非同期）リクエストの場合は、Status 200 JSONで遷移先URLをフロントに通知する
-        if ($request->wantsJson() || config('app.env') === 'production') {
-            return response()->json([
-                'redirect' => $redirectUrl,
-            ], 200);
-        }
-
-        // ローカル環境等でのフォールバック（通常リダイレクト）
-        return redirect()->to($redirectUrl);
+        // ⚡【超・絶対安全弁】InertiaやJSONなどの複雑な判定をすべてゴミ箱に捨て、
+        // ブラウザに対して「何が何でも今すぐこの絶対URLへ強制移動しろ」という最強のHTMLリダイレクトを返します！
+        return redirect()->away($targetUrl);
     }
+
+        
+    
 }
