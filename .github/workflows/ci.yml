@@ -45,5 +45,5 @@ jobs:
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: ":memory:"
-          APP_KEY: base64:wVbBv2U23y+Vp7Y0iBf6gJ6Vvj7gNx8/jLNm6gWq3as=
+          APP_KEY: ${{ secrets.APP_KEY }}
         run: ./vendor/bin/pest --coverage --min=100
