@@ -15,8 +15,9 @@ RUN apk add --no-cache \
     unzip \
     git \
     bash \
+    postgresql-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql gd zip opcache
+    && docker-php-ext-install pdo_pgsql gd zip opcache
 
 # Composerの導入
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
