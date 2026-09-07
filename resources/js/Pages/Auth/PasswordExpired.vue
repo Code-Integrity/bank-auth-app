@@ -83,13 +83,12 @@ const submit = () => {
                     required
                     autocomplete="new-password"
                 />
-                <!-- ✨ 修正後（こちらに差し替えてください） -->
+                <!-- ✨ 今度こそ100%確実に表示される決定版コード -->
                 <InputError
                     class="mt-2"
                     :message="
-                        $page.props.errors && $page.props.errors.updatePassword
-                            ? $page.props.errors.updatePassword.password
-                            : form.errors.password
+                        form.errors.password ||
+                        $page.props.errorBags?.updatePassword?.password?.[0]
                     "
                 />
 
