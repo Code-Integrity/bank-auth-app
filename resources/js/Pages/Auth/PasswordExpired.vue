@@ -14,16 +14,16 @@ const form = useForm({
     password_confirmation: "",
 });
 
-// リアルタイム・バリデーションチェック用のロジック
+// Real-time password requirement validation logic
 const passwordRequirements = computed(() => {
     const p = form.password;
     return [
-        { label: "最低12文字以上", valid: p.length >= 12 },
-        { label: "英大文字を含む", valid: /[A-Z]/.test(p) },
-        { label: "英小文字を含む", valid: /[a-z]/.test(p) },
-        { label: "数字を含む", valid: /[0-9]/.test(p) },
+        { label: "At least 12 characters", valid: p.length >= 12 },
+        { label: "Contains uppercase letters", valid: /[A-Z]/.test(p) },
+        { label: "Contains lowercase letters", valid: /[a-z]/.test(p) },
+        { label: "Contains numbers", valid: /[0-9]/.test(p) },
         {
-            label: "記号を含む（@$!%*?&など）",
+            label: "Contains special characters (e.g., @$!%*?&)",
             valid: /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(p),
         },
     ];
@@ -45,15 +45,17 @@ const submit = () => {
 
         <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
             <span class="font-bold text-red-600 dark:text-red-400"
-                >【セキュリティ警告】</span
+                >[Security Alert]</span
             >
-            あなたのパスワードは有効期限（90日）を超過しています。システム全体の安全を確保するため、欧州銀行基準を満たす新しいパスワードへの更新が義務付けられています。
+            Your password has expired (exceeded the 90-day validity period). To
+            ensure system-wide security and comply with European banking
+            standards, you are required to update your password.
         </div>
 
         <form @submit.prevent="submit">
-            <!-- 現在のパスワード -->
+            <!-- Current Password -->
             <div>
-                <InputLabel for="current_password" value="現在のパスワード" />
+                <InputLabel for="current_password" value="Current Password" />
                 <TextInput
                     id="current_password"
                     v-model="form.current_password"
@@ -69,9 +71,9 @@ const submit = () => {
                 />
             </div>
 
-            <!-- 新しいパスワード -->
+            <!-- New Password -->
             <div class="mt-4">
-                <InputLabel for="password" value="新しいパスワード" />
+                <InputLabel for="password" value="New Password" />
                 <TextInput
                     id="password"
                     v-model="form.password"
@@ -82,14 +84,14 @@ const submit = () => {
                 />
                 <InputError class="mt-2" :message="form.errors.password" />
 
-                <!-- リアルタイム・チェック・インジケーター -->
+                <!-- Real-time Validation Indicator -->
                 <div
                     class="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-xs space-y-1"
                 >
                     <p
                         class="font-semibold text-gray-700 dark:text-gray-300 mb-1"
                     >
-                        パスワードポリシー要件：
+                        Password Policy Requirements:
                     </p>
                     <div
                         v-for="(req, index) in passwordRequirements"
@@ -117,11 +119,11 @@ const submit = () => {
                 </div>
             </div>
 
-            <!-- 確認用パスワード -->
+            <!-- Confirm New Password -->
             <div class="mt-4">
                 <InputLabel
                     for="password_confirmation"
-                    value="新しいパスワード（確認）"
+                    value="Confirm New Password"
                 />
                 <TextInput
                     id="password_confirmation"
@@ -142,7 +144,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    パスワードを更新してログイン
+                    Update Password & Log In
                 </PrimaryButton>
             </div>
         </form>
