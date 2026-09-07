@@ -31,6 +31,7 @@ const passwordRequirements = computed(() => {
 
 const submit = () => {
     form.post(route("user.password-expired.update"), {
+        errorBag: "updatePassword", // ★JetstreamのバリデーションエラーをInertiaのフォームに紐付け
         onFinish: () =>
             form.reset("current_password", "password", "password_confirmation"),
     });
