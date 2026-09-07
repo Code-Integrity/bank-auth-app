@@ -1,47 +1,75 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { Link } from "@inertiajs/vue3"; // 💡 この行を追加してください！
+import { Link } from "@inertiajs/vue3";
 
 defineProps({
     logs: Object,
 });
 
+// 動的にイベント名をプロフェッショナルな英語に変換する関数
+const getEventTitle = (event, fallbackDescription) => {
+    switch (event) {
+        case "auth.login.success":
+            return "Successful Login";
+        case "auth.login.failed":
+            return "Failed Login Attempt";
+        case "middleware.2fa.redirect":
+            return "2FA Verification Redirect";
+        case "user.password.updated":
+            return "Password Successfully Updated";
+        default:
+            // 識別子が不明で、バックエンドの元の説明文が日本語の「未定義〜」の場合は汎用英語を返す
+            if (
+                !fallbackDescription ||
+                fallbackDescription.includes("未定義")
+            ) {
+                return "Security Event Detected";
+            }
+            return fallbackDescription;
+    }
+};
+
 // イベントごとのバッジ配色を決定する関数
 const getEventClass = (event) => {
     switch (event) {
         case "auth.login.success":
-            return "bg-green-100 text-green-800 border-green-200";
+            return "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800";
         case "auth.login.failed":
-            return "bg-red-100 text-red-800 border-red-200 animate-pulse";
+            return "bg-red-100 text-red-800 border-red-200 animate-pulse dark:bg-red-900/30 dark:text-red-400 dark:border-red-800";
         case "middleware.2fa.redirect":
-            return "bg-yellow-100 text-yellow-800 border-yellow-200";
+            return "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800";
         default:
-            return "bg-gray-100 text-gray-800 border-gray-200";
+            return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700";
     }
 };
 </script>
 
 <template>
-    <AppLayout title="セキュリティ監査ログ">
+    <AppLayout title="Security Audit Logs">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                セキュリティ監査ログ
+            <h2
+                class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
+            >
+                Security Audit Logs
             </h2>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div
-                    class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6"
+                    class="bg-white dark:bg-gray-900 overflow-hidden shadow-xl sm:rounded-lg p-6"
                 >
-                    <p class="text-sm text-gray-600 mb-6">
-                        ※この画面には、お使いのアカウントで行われたセキュリティ関連の重要な操作・イベントがリアルタイムに記録されています。不審なログイン履歴がないか定期的にご確認ください。
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                        This dashboard displays real-time records of critical
+                        security events and operations associated with your
+                        account. Please review this log regularly to ensure
+                        there is no unauthorized access.
                     </p>
 
                     <!-- タイムラインコンポーネント -->
                     <div
                         v-if="logs.data.length > 0"
-                        class="relative border-l border-gray-200 ml-4 md:ml-6"
+                        class="relative border-l border-gray-200 dark:border-gray-700 ml-4 md:ml-6"
                     >
                         <div
                             v-for="log in logs.data"
@@ -50,10 +78,10 @@ const getEventClass = (event) => {
                         >
                             <!-- タイムラインのドットマーカー -->
                             <span
-                                class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white"
+                                class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 dark:bg-blue-900/50 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900"
                             >
                                 <svg
-                                    class="w-3 h-3 text-blue-800"
+                                    class="w-3 h-3 text-blue-800 dark:text-blue-400"
                                     xmlns="http://w3.org"
                                     fill="none"
                                     viewBox="0 0 24 24"
@@ -70,11 +98,11 @@ const getEventClass = (event) => {
 
                             <!-- ログカードの本体 -->
                             <div
-                                class="p-4 bg-gray-50 rounded-lg border border-gray-100 shadow-sm sm:flex sm:items-center sm:justify-between"
+                                class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm sm:flex sm:items-center sm:justify-between"
                             >
-                                <div class="mb-2 sm:mb-0">
+                                <div class="mb-2 sm:mb-0 w-full">
                                     <div
-                                        class="text-sm font-semibold text-gray-700 flex flex-wrap items-center gap-2"
+                                        class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex flex-wrap items-center gap-2"
                                     >
                                         <span
                                             class="text-xs font-mono text-gray-400"
@@ -86,11 +114,16 @@ const getEventClass = (event) => {
                                                 getEventClass(log.event),
                                             ]"
                                         >
-                                            {{ log.description }}
+                                            {{
+                                                getEventTitle(
+                                                    log.event,
+                                                    log.description,
+                                                )
+                                            }}
                                         </span>
                                     </div>
                                     <div
-                                        class="text-xs text-gray-500 font-mono mt-1 flex flex-wrap gap-x-4"
+                                        class="text-xs text-gray-500 dark:text-gray-400 font-mono mt-1 flex flex-wrap gap-x-4"
                                     >
                                         <span
                                             ><strong>IP:</strong>
@@ -110,8 +143,11 @@ const getEventClass = (event) => {
                     </div>
 
                     <!-- ログが存在しない場合の空表示 -->
-                    <div v-else class="text-center py-12 text-gray-500">
-                        記録されたセキュリティイベントはまだありません。
+                    <div
+                        v-else
+                        class="text-center py-12 text-gray-500 dark:text-gray-400"
+                    >
+                        No security events recorded yet.
                     </div>
 
                     <!-- ページネーション（簡易版リンク） -->
@@ -126,17 +162,17 @@ const getEventClass = (event) => {
                             >
                                 <div
                                     v-if="link.url === null"
-                                    class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded"
+                                    class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border dark:border-gray-700 rounded"
                                     v-html="link.label"
                                 />
                                 <Link
                                     v-else
                                     :href="link.url"
                                     :class="[
-                                        'mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-indigo-500 focus:text-indigo-500',
+                                        'mr-1 mb-1 px-4 py-3 text-sm leading-4 border dark:border-gray-700 rounded hover:bg-white dark:hover:bg-gray-800 focus:border-indigo-500 focus:text-indigo-500',
                                         link.active
                                             ? 'bg-indigo-600 text-white font-bold'
-                                            : 'bg-white text-gray-700',
+                                            : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300',
                                     ]"
                                     v-html="link.label"
                                 />
