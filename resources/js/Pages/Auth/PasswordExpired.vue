@@ -83,9 +83,14 @@ const submit = () => {
                     required
                     autocomplete="new-password"
                 />
+                <!-- ✨ 修正後（こちらに差し替えてください） -->
                 <InputError
                     class="mt-2"
-                    :message="$page.props.errors.updatePassword?.password"
+                    :message="
+                        $page.props.errors && $page.props.errors.updatePassword
+                            ? $page.props.errors.updatePassword.password
+                            : form.errors.password
+                    "
                 />
 
                 <!-- Real-time Validation Indicator -->
