@@ -30,7 +30,6 @@ test('new users can register', function () {
 
     $this->assertAuthenticated();
 
-    // 🌟 テスト環境の標準ルート定義（dashboard）に合わせて検証を修正
     $response->assertRedirect(route('dashboard', absolute: false));
 })->skip(function () {
     return ! Features::enabled(Features::registration());

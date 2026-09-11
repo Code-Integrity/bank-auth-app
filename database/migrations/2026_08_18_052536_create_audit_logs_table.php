@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('audit_logs', function (Blueprint $table) {
             $table->id();
-            // 💡 Userモデルと紐付ける外部キー（Userが削除されたらログも消える設定）
+
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            // 💡 セキュリティイベント名（例: auth.login.success）
+
             $table->string('event');
-            // 💡 接続元のIPアドレス（IPv6も考慮して長さを設定）
+
             $table->string('ip_address', 45)->nullable();
-            // 💡 接続元のブラウザ/デバイス情報（長文になるためテキスト型）
+
             $table->text('user_agent')->nullable();
             $table->timestamps();
         });

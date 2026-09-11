@@ -1,12 +1,13 @@
 # AegisBank-Auth-Core 🛡️
 
-![Laravel Version](https://shields.io)
-![PHP Version](https://shields.io)
-![Pest Version](https://shields.io)
-![Test Coverage](https://shields.io)
-![License](https://shields.io)
+[![Laravel Version](https://shields.io)](https://laravel.com)
+[![PHP Version](https://shields.io)](https://php.net)
+[![Test Coverage](https://shields.io)](https://pestphp.com)
+[![License](https://shields.io)](LICENSE)
 
 A high-security, regulatory-compliant authentication architecture engineered with **Laravel 11, Jetstream (Inertia.js + Vue 3), and Pest 3.x**. This application is strictly designed to meet European banking-grade security standards, aligning with the core requirements of **PSD2/RTS (Revised Payment Services Directive / Regulatory Technical Standards)** and **EBA (European Banking Authority) Guidelines**.
+
+Designed as a bulletproof proof-of-concept (PoC) that showcases **100.0% Test Coverage via Pest 3.x**, strict session isolation, and real-time data leak protection required for global-tier engineering roles.
 
 ---
 
@@ -14,6 +15,7 @@ A high-security, regulatory-compliant authentication architecture engineered wit
 
 - **Test-Driven Rigor**: 100% strict test coverage defended via **Pest 3.x** and **PCOV**. Every edge case in security middleware and rate limiters is structurally validated.
 - **Resilient Middleware Architecture**: All defensive guardrails are fully isolated with explicit exception handling (`try-catch` structures) ensuring failure-free redirection mechanisms during system or database anomalies (e.g., preventing 500 crashes during audit log DB failure).
+- **Intentional Error Verbose**: Detailed validation messages are explicitly retained in this PoC layer to streamline reviewer verification and frontend state debugging; in a strict production environment, these are wrapped behind obfuscated generic exceptions to mitigate enumeration vectors.
 - **Production-Validated**: Verified against physical target DB environments utilizing multi-layered dummy credential sequences, eliminating structural gaps between local testing and production realities.
 
 ---
@@ -30,7 +32,7 @@ A high-security, regulatory-compliant authentication architecture engineered wit
 - **Dual-Pipeline Rate Limiting (`login-account` | `login-ip`)**: Implements two completely decoupled throttling pipelines executing synchronously:
     - **Per-Account Limiter**: Restricts discrete account targeting to a maximum of 3 failed attempts per minute.
     - **Per-IP Limiter**: Caps continuous local infrastructure origin attacks to 5 failed attempts per minute across multiple credentials.
-- **Lockout Penalty**: Immediate 15-minute global cool-down response containing precise structured JSON status codes (`429 Too Many Requests`).
+- **Lockout Penalty**: Immediate 15-minute global cool-down response containing precise structured JSON status codes (`429 Too Requests`).
 
 ### 3. Regulatory Password Lifecycles & Complex Policies
 
@@ -41,9 +43,7 @@ A high-security, regulatory-compliant authentication architecture engineered wit
 
 ### 4. Non-Repudiation: Immutable Structured Audit Logging
 
-Every mission-critical security milestone (`security.password.expired`, `security.password.renewed`, authentication lockouts) is formatted inside structured database payloads (`audit_logs` table) mapping:
-
-- `user_id`, `event`, `ip_address`, `user_agent`, and granular diagnostic `payload` (JSON).
+Every mission-critical security milestone (`security.password.expired`, `security.password.renewed`, authentication lockouts) is formatted inside structured database payloads (`audit_logs` table) mapping `user_id`, `event`, `ip_address`, `user_agent`, and granular diagnostic `payload` (JSON).
 
 #### Example Schema / JSON Payload:
 
@@ -73,9 +73,42 @@ Every mission-critical security milestone (`security.password.expired`, `securit
 
 ---
 
+## ⚙️ Installation & Local Setup
+
+### Prerequisites
+
+- Docker & Docker Compose (Laravel Sail)
+
+### Step-by-Step Deployment
+
+1. **Clone the Repository:**
+    ```bash
+    git clone https://github.com
+    cd AegisBank-Auth-Core
+    ```
+2. **Environment Configuration:**
+    ```bash
+    cp .env.example .env
+    # Configure your local application keys and database credentials
+    ```
+3. **Orchestrate Containers & Dependencies:**
+    ```bash
+    ./vendor/bin/sail up -d
+    ./vendor/bin/sail composer install
+    ./vendor/bin/sail npm install
+    ./vendor/bin/sail npm run build
+    ```
+4. **Execute Strategic Migrations & Seeders:**
+    ```bash
+    # Generates clean bank schemas along with specific demo environment seed data
+    ./vendor/bin/sail artisan migrate:fresh --seed
+    ```
+
+---
+
 ## 🏁 Verification & Testing Suite
 
-To trigger the comprehensive test suite and verify the **100.0% total system coverage** claim:
+To trigger the complete test suite and verify the **100.0% total system coverage** claim:
 
 ```bash
 ./vendor/bin/sail pest --coverage
@@ -89,20 +122,42 @@ To trigger the comprehensive test suite and verify the **100.0% total system cov
                                                                                 Total: 100.0 %
 ```
 
-```bash
-# Verify real-time database schema states
-./vendor/bin/sail artisan tinker
-```
-
 ---
 
 ## 🚀 Live Demo & Roadmap (Phase 4)
 
 - **Live Demo**: _[Coming Soon / Link to Railway Deployment]_
-- **CI/CD Integration**: formalizing Pest coverage gating in GitHub Actions.
+- **CI/CD Integration**: Formalizing Pest coverage gating in GitHub Actions.
+- **Structural Upgrade**: Gradual framework upgrade to sync with modern enterprise LTS lifecycles.
 - **FIDO2 / Passkey Support**: WebAuthn integration for seamless biometric authentication.
 
 ---
+
+## License
+
+This project is licensed under the Apache License 2.0.
+
+You may use, modify, and distribute this software under the terms of the Apache License.
+A full copy of the license is available at:
+
+https://apache.org
+
+## Contributing
+
+Contributions are welcome.
+Feel free to open issues or submit pull requests.
+
+## Additional Author Notice (Non‑Legal)
+
+This project includes original architectural logic, structural defense patterns, and high-security workflow designs engineered by **Code‑Integrity**.
+
+While the Apache License permits reuse and modification, the author requests the following courtesy guidelines:
+
+- Please provide proper attribution when using or extending the structural security concepts introduced in this repository (e.g., the 90-day forced isolation middleware graph, immutable non-repudiation audit trails, and automated Pest 3.x total coverage design).
+- Do not misrepresent these specific full-stack state management workflows or automated testing matrices as your own original invention.
+- When this core architecture is utilized within corporate training, academic cybersecurity material, or enterprise security frameworks, please include clear credit to **Code‑Integrity**.
+
+These courtesy guidelines do not alter the Apache License terms and are provided to preserve the professional integrity of the author's work.
 
 _Developed under global financial security frameworks, prioritizing runtime reliability, architectural immutability, and zero-defect deployments._
 

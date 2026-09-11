@@ -5,12 +5,12 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -65,16 +65,16 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'password_changed_at' => 'datetime', // 追加
+            'password_changed_at' => 'datetime',
         ];
     }
 
     /**
-     * ユーザーが持つ監査ログのリレーションを定義
+     * Define the relationship for audit logs belonging to the user.
      */
     public function auditLogs(): HasMany
     {
-        // Userは複数のAuditLogを持つ（HasMany）
-        return $this->hasMany(\App\Models\AuditLog::class);
+
+        return $this->hasMany(AuditLog::class);
     }
 }

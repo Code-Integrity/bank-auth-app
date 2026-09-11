@@ -8,6 +8,10 @@ import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 
+const showCurrentPassword = ref(false);
+const showNewPassword = ref(false);
+const showConfirmPassword = ref(false);
+
 const form = useForm({
     current_password: "",
     password: "",
@@ -31,7 +35,7 @@ const passwordRequirements = computed(() => {
 
 const submit = () => {
     form.post(route("user.password-expired.update"), {
-        errorBag: "updatePassword", // ★JetstreamのバリデーションエラーをInertiaのフォームに紐付け
+        errorBag: "updatePassword",
         onFinish: () =>
             form.reset("current_password", "password", "password_confirmation"),
     });
@@ -57,15 +61,57 @@ const submit = () => {
             <!-- Current Password -->
             <div>
                 <InputLabel for="current_password" value="Current Password" />
-                <TextInput
-                    id="current_password"
-                    v-model="form.current_password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                    autocomplete="current-password"
-                />
+                <div class="relative mt-1">
+                    <TextInput
+                        id="current_password"
+                        v-model="form.current_password"
+                        :type="showCurrentPassword ? 'text' : 'password'"
+                        class="block w-full pr-10"
+                        required
+                        autofocus
+                        autocomplete="current-password"
+                    />
+                    <button
+                        type="button"
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                        @click="showCurrentPassword = !showCurrentPassword"
+                    >
+                        <svg
+                            v-if="showCurrentPassword"
+                            class="size-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"
+                            />
+                        </svg>
+                        <svg
+                            v-else
+                            class="size-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                        </svg>
+                    </button>
+                </div>
                 <InputError
                     class="mt-2"
                     :message="form.errors.current_password"
@@ -75,15 +121,56 @@ const submit = () => {
             <!-- New Password -->
             <div class="mt-4">
                 <InputLabel for="password" value="New Password" />
-                <TextInput
-                    id="password"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
-                />
-                <!-- ✨ 今度こそ100%確実に表示される決定版コード -->
+                <div class="relative mt-1">
+                    <TextInput
+                        id="password"
+                        v-model="form.password"
+                        :type="showNewPassword ? 'text' : 'password'"
+                        class="block w-full pr-10"
+                        required
+                        autocomplete="new-password"
+                    />
+                    <button
+                        type="button"
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                        @click="showNewPassword = !showNewPassword"
+                    >
+                        <svg
+                            v-if="showNewPassword"
+                            class="size-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"
+                            />
+                        </svg>
+                        <svg
+                            v-else
+                            class="size-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                        </svg>
+                    </button>
+                </div>
                 <InputError
                     class="mt-2"
                     :message="
@@ -133,14 +220,56 @@ const submit = () => {
                     for="password_confirmation"
                     value="Confirm New Password"
                 />
-                <TextInput
-                    id="password_confirmation"
-                    v-model="form.password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
-                />
+                <div class="relative mt-1">
+                    <TextInput
+                        id="password_confirmation"
+                        v-model="form.password_confirmation"
+                        :type="showConfirmPassword ? 'text' : 'password'"
+                        class="block w-full pr-10"
+                        required
+                        autocomplete="new-password"
+                    />
+                    <button
+                        type="button"
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                        @click="showConfirmPassword = !showConfirmPassword"
+                    >
+                        <svg
+                            v-if="showConfirmPassword"
+                            class="size-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"
+                            />
+                        </svg>
+                        <svg
+                            v-else
+                            class="size-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                        </svg>
+                    </button>
+                </div>
                 <InputError
                     class="mt-2"
                     :message="form.errors.password_confirmation"

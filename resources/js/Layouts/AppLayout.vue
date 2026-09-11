@@ -401,7 +401,7 @@ const logout = () => {
                                 :href="route('user.audit-logs')"
                                 :active="route().current('user.audit-logs')"
                             >
-                                セキュリティ監査ログ
+                                Security Audit Trails
                             </ResponsiveNavLink>
 
                             <ResponsiveNavLink

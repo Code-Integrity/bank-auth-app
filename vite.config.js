@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import vue from "@vitejs/plugin-vue";
-import path from "path"; // 👈 1. パス操作モジュールを追加
+import path from "path";
 
 export default defineConfig({
     plugins: [
@@ -18,7 +18,7 @@ export default defineConfig({
             },
         }),
     ],
-    // 👈 2. エイリアス（@）の設定を厳格に定義
+
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./resources/js"),

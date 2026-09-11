@@ -115,7 +115,7 @@ return [
     */
 
     'limiters' => [
-        'login-account|login-ip', // ★ 2つの厳格なリミッターを連鎖させます
+        'login-account|login-ip',
         'two-factor' => 'two-factor',
         'passkeys' => 'passkeys',
     ],
