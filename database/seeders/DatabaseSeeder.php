@@ -13,13 +13,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // デフォルトのテストユーザー
+
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
 
-        // 【追記】デモサイト専用の一発隔離シミュレーション用シーダーを呼び出す
         $this->call(DemoEnvironmentSeeder::class);
     }
 }

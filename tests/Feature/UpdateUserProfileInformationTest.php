@@ -2,55 +2,54 @@
 
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Models\User;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 uses(RefreshDatabase::class);
 
-test('プロフィール更新：通常ユーザーの名前とメールアドレスを更新できる（else側分岐の網羅）', function () {
+test('profile update: allows a standard user to update their name and email address (covers else branch criteria)', function () {
     $user = User::factory()->create([
-        'name' => '古い 名前',
+        'name' => 'Old Name',
         'email' => 'old@example.com',
     ]);
 
-    $action = new UpdateUserProfileInformation();
+    $action = new UpdateUserProfileInformation;
 
     $input = [
-        'name' => '新しい 名前',
+        'name' => 'New Name',
         'email' => 'new@example.com',
     ];
 
     $action->update($user, $input);
 
     $user->refresh();
-    expect($user->name)->toBe('新しい 名前');
+    expect($user->name)->toBe('New Name');
     expect($user->email)->toBe('new@example.com');
 });
 
-test('プロフィール更新：メール認証が必要なユーザーがメールアドレスを変更した場合、認証がリセットされ通知が飛ぶ（if側分岐の網羅）', function () {
+test('profile update: resets verification state and dispatches a notification when email address changes for verification-required users (covers if branch criteria)', function () {
     Notification::fake();
 
-    // Userモデル自体がMustVerifyEmailを実装している場合はそのままUser::factory()でOKですが、
-    // 実装していない場合を想定し、提示いただいた安全な無名クラスのモックを継承します
-    $user = new class extends User implements MustVerifyEmail {
+    $user = new class extends User implements MustVerifyEmail
+    {
         protected $table = 'users';
     };
 
     $user->fill(User::factory()->raw([
-        'name' => '認証 ユーザー',
+        'name' => 'Verified User',
         'email' => 'verified@example.com',
         'email_verified_at' => now(),
     ]))->save();
 
-    $action = new UpdateUserProfileInformation();
+    $action = new UpdateUserProfileInformation;
 
     $input = [
-        'name' => '認証 ユーザー',
+        'name' => 'Verified User',
         'email' => 'changed@example.com',
     ];
 
@@ -63,14 +62,13 @@ test('プロフィール更新：メール認証が必要なユーザーがメ�
     Notification::assertSentTo($user, VerifyEmail::class);
 });
 
-test('プロフィール更新：プロフィール写真をアップロードできる（フォト分岐の完全網羅）', function () {
+test('profile update: permits a user to successfully upload a profile photo (covers avatar upload branch)', function () {
     Storage::fake('public');
 
     $user = User::factory()->create();
-    $action = new UpdateUserProfileInformation();
+    $action = new UpdateUserProfileInformation;
 
-    // 💡 GD拡張機能に依存せず、ダミーの画像バイナリを直接生成して偽装する
-    $dummyJpgContent = "FFD8FFE000104A46494600010101006000600000FFDB004300"; // JPEGのヘッダー模倣テキスト
+    $dummyJpgContent = 'FFD8FFE000104A46494600010101006000600000FFDB004300';
     $file = UploadedFile::fake()->createWithContent(
         'avatar.jpg',
         $dummyJpgContent
@@ -79,7 +77,7 @@ test('プロフィール更新：プロフィール写真をアップロード�
     $input = [
         'name' => $user->name,
         'email' => $user->email,
-        'photo' => $file, // isset($input['photo']) を確実に通過
+        'photo' => $file,
     ];
 
     $action->update($user, $input);
@@ -89,22 +87,21 @@ test('プロフィール更新：プロフィール写真をアップロード�
     Storage::disk('public')->assertExists($user->profile_photo_path);
 });
 
-
-test('プロフィール更新：バリデーションに違反する場合はエラーになる（異常系の網羅）', function () {
+test('profile update: throws a validation exception when data violates semantic rules (covers anomaly test vectors)', function () {
     $user = User::factory()->create();
-    $action = new UpdateUserProfileInformation();
+    $action = new UpdateUserProfileInformation;
 
     $invalidInput = [
         'name' => '',
         'email' => 'not-an-email',
     ];
 
-    expect(fn() => $action->update($user, $invalidInput))
+    expect(fn () => $action->update($user, $invalidInput))
         ->toThrow(ValidationException::class);
 });
 
-test('ユーザーがメールアドレスを変更した際、再認証・再ベリファイの分岐ルートを完全に通過する（HTTPリクエスト統合テスト）', function () {
-    Notification::fake(); // HTTP経由でもメールが飛ぶためfake化
+test('profile update: fully traverses the re-verification branch and handling loops when an email address is altered (HTTP integrated integration test)', function () {
+    Notification::fake();
 
     $user = User::factory()->create([
         'email' => 'original-email@example.com',
@@ -115,7 +112,7 @@ test('ユーザーがメールアドレスを変更した際、再認証・再�
     $this->actingAs($user);
 
     $response = $this->put('/user/profile-information', [
-        'name'  => $user->name,
+        'name' => $user->name,
         'email' => 'new-secure-email@example.com',
     ]);
 

@@ -6,7 +6,6 @@ defineProps({
     logs: Object,
 });
 
-// 動的にイベント名をプロフェッショナルな英語に変換する関数
 const getEventTitle = (event, fallbackDescription) => {
     switch (event) {
         case "auth.login.success":
@@ -18,10 +17,9 @@ const getEventTitle = (event, fallbackDescription) => {
         case "user.password.updated":
             return "Password Successfully Updated";
         default:
-            // 識別子が不明で、バックエンドの元の説明文が日本語の「未定義〜」の場合は汎用英語を返す
             if (
                 !fallbackDescription ||
-                fallbackDescription.includes("未定義")
+                fallbackDescription.includes("Undefined")
             ) {
                 return "Security Event Detected";
             }
@@ -29,7 +27,6 @@ const getEventTitle = (event, fallbackDescription) => {
     }
 };
 
-// イベントごとのバッジ配色を決定する関数
 const getEventClass = (event) => {
     switch (event) {
         case "auth.login.success":
@@ -66,7 +63,7 @@ const getEventClass = (event) => {
                         there is no unauthorized access.
                     </p>
 
-                    <!-- タイムラインコンポーネント -->
+                    <!-- Timeline display component -->
                     <div
                         v-if="logs.data.length > 0"
                         class="relative border-l border-gray-200 dark:border-gray-700 ml-4 md:ml-6"
@@ -76,7 +73,7 @@ const getEventClass = (event) => {
                             :key="log.id"
                             class="mb-10 ml-6"
                         >
-                            <!-- タイムラインのドットマーカー -->
+                            <!-- Timeline dot marker -->
                             <span
                                 class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 dark:bg-blue-900/50 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900"
                             >
@@ -96,7 +93,7 @@ const getEventClass = (event) => {
                                 </svg>
                             </span>
 
-                            <!-- ログカードの本体 -->
+                            <!-- Log item card container -->
                             <div
                                 class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm sm:flex sm:items-center sm:justify-between"
                             >
@@ -142,7 +139,7 @@ const getEventClass = (event) => {
                         </div>
                     </div>
 
-                    <!-- ログが存在しない場合の空表示 -->
+                    <!-- Fallback display for missing logs -->
                     <div
                         v-else
                         class="text-center py-12 text-gray-500 dark:text-gray-400"
@@ -150,7 +147,7 @@ const getEventClass = (event) => {
                         No security events recorded yet.
                     </div>
 
-                    <!-- ページネーション（簡易版リンク） -->
+                    <!-- Simple pagination links -->
                     <div
                         v-if="logs.links && logs.links.length > 3"
                         class="mt-6 flex justify-center"

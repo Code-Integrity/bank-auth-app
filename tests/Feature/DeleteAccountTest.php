@@ -4,7 +4,7 @@ use App\Models\User;
 use Laravel\Jetstream\Features;
 
 test('user accounts can be deleted', function () {
-    // 🌟 変更点: 2FA設定済みのユーザーを生成して隔離ミドルウェアをバイパス
+
     $this->actingAs($user = User::factory()->create([
         'two_factor_secret' => encrypt('secret-key'),
         'two_factor_recovery_codes' => encrypt(json_encode(['recovery-code'])),
@@ -12,7 +12,7 @@ test('user accounts can be deleted', function () {
     ]));
 
     $this->delete('/user', [
-        'password' => 'password', // ※銀行レベルポリシー（最低12文字など）に合わせて必要なら 'Password1234!' 等に変更
+        'password' => 'password',
     ]);
 
     expect($user->fresh())->toBeNull();
@@ -21,7 +21,7 @@ test('user accounts can be deleted', function () {
 }, 'Account deletion is not enabled.');
 
 test('correct password must be provided before account can be deleted', function () {
-    // 🌟 変更点: 2FA設定済みのユーザーを生成して隔離ミドルウェアをバイパス
+
     $this->actingAs($user = User::factory()->create([
         'two_factor_secret' => encrypt('secret-key'),
         'two_factor_recovery_codes' => encrypt(json_encode(['recovery-code'])),
