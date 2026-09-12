@@ -268,11 +268,10 @@ const logout = () => {
                                             Profile
                                         </DropdownLink>
 
-                                        <!-- 🔒 ここにPC用の監査ログリンクを追記 -->
                                         <DropdownLink
-                                            :href="route('user.audit-logs')"
+                                            :href="route('audit-logs.index')"
                                         >
-                                            セキュリティ監査ログ
+                                            Security Audit Logs
                                         </DropdownLink>
 
                                         <DropdownLink
@@ -396,12 +395,11 @@ const logout = () => {
                                 Profile
                             </ResponsiveNavLink>
 
-                            <!-- 🔒 ここに監査ログへのリンクを追記 -->
                             <ResponsiveNavLink
-                                :href="route('user.audit-logs')"
-                                :active="route().current('user.audit-logs')"
+                                :href="route('audit-logs.index')"
+                                :active="route().current('audit-logs.index')"
                             >
-                                Security Audit Trails
+                                Security Audit Logs
                             </ResponsiveNavLink>
 
                             <ResponsiveNavLink

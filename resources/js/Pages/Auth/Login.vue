@@ -64,7 +64,6 @@ const submit = async () => {
 };
 </script>
 
-
 <template>
     <Head title="Log in" />
 
@@ -77,15 +76,26 @@ const submit = async () => {
             {{ status }}
         </div>
 
-        <!-- 🔄 resources/js/Pages/Auth/Login.vue の <form> から </form> までのブロックを、以下の「Vueの支配を100%脱出したピュアHTMLコード」に完全に置き換えます -->
-        <form method="POST" action="/login" id="native-login-form">
-            <!-- 🛡️ CSRFトークンをJavaScriptを一切介さずにクッキーから直接引き抜くネイティブな仕組み -->
-            <input type="hidden" name="_token" :value="$page.props.csrf_token">
-
-            <!-- 📧 メールアドレス入力欄（生のHTML input） -->
-            <div style="margin-bottom: 16px;">
-                <label style="display: block; font-size: 14px; color: #374151; margin-bottom: 4px;">Email</label>
-                <input type="email" name="email" required autofocus autocomplete="username" style="display: block; width: 100%; border-radius: 6px; border: 1px solid #d1d5db; padding: 8px; color: #111827;">
+        <form
+            @submit.prevent="
+                form.post(route('login'), {
+                    onFinish: () => form.reset('password'),
+                })
+            "
+        >
+            <!-- Email -->
+            <div>
+                <InputLabel for="email" value="Email" />
+                <TextInput
+                    id="email"
+                    v-model="form.email"
+                    type="email"
+                    class="mt-1 block w-full"
+                    required
+                    autofocus
+                    autocomplete="username"
+                />
+                <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
             <!-- Password -->
@@ -100,7 +110,7 @@ const submit = async () => {
                         required
                         autocomplete="current-password"
                     />
-                    <!-- Password visibility toggle button-->
+                    <!-- Password visibility toggle button -->
                     <button
                         type="button"
                         class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
@@ -145,17 +155,23 @@ const submit = async () => {
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
-            <!-- 🔄 記憶するチェックボックス（生のHTML input） -->
-            <div style="margin-bottom: 16px; display: flex; align-items: center;">
-                <input type="checkbox" name="remember" id="remember" style="border-radius: 4px; border: 1px solid #d1d5db; color: #4f46e5;">
-                <label for="remember" style="margin-left: 8px; font-size: 14px; color: #4b5563;">Remember me</label>
+            <!-- Remember Me -->
+            <div class="block mt-4">
+                <label class="flex items-center">
+                    <Checkbox v-model:checked="form.remember" name="remember" />
+                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
+                </label>
             </div>
 
-            <!-- 🚀 究極の力押し送信ボタン（Vueコンポーネントを介さない100%生のHTMLボタン） -->
-            <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
-                <button type="submit" style="background-color: #1f2937; color: #ffffff; font-weight: 600; padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; text-transform: uppercase; font-size: 12px; tracking: wider;">
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end mt-4">
+                <PrimaryButton
+                    class="ms-4"
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                >
                     Log in
-                </button>
+                </PrimaryButton>
             </div>
         </form>
     </AuthenticationCard>

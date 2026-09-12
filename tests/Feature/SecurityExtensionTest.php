@@ -112,7 +112,7 @@ test('quarantine view: validates that entering compliant credentials successfull
         'password_confirmation' => 'New-Secure-Password-2026!',
     ]);
 
-    $response->assertRedirect(url('/'));
+    $response->assertRedirect(url('/dashboard'));
 
     $this->assertDatabaseHas('audit_logs', [
         'user_id' => $user->id,
