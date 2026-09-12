@@ -152,7 +152,7 @@ Please note that the local/online live demo environment is intentionally orchest
 
 ## 🚀 Live Demo & Roadmap (Phase 4)
 
-- **Live Demo**: _[Coming Soon / Link to Railway Deployment]_
+- **Live Demo**: https://bank-auth-app-production.up.railway.app/
 - **CI/CD Integration**: Formalizing Pest coverage gating in GitHub Actions.
 - **Structural Upgrade**: Gradual framework upgrade to sync with modern enterprise LTS lifecycles.
 - **FIDO2 / Passkey Support**: WebAuthn integration for seamless biometric authentication.
