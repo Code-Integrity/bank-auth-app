@@ -1,0 +1,35 @@
+# 🔒 Critical Security Secrets
+.env
+.env.*
+.git
+.github
+storage/*.key
+
+# 📦 Dependencies (Should be installed freshly inside containers)
+vendor/
+node_modules/
+
+# 📈 Testing & Caches
+/coverage
+/coverage-report
+.phpunit.cache
+.pest_cache
+.phpunit.result.cache
+npm-debug.log
+yarn-error.log
+
+# 🗄️ Local Databases & Temporary Assets
+database/*.sqlite
+database/*.sqlite-journal
+/public/hot
+/storage/pail
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/cache/*
+storage/logs/*
+
+# 🛠️ IDE & OS Garbage
+.idea/
+.vscode/
+.DS_Store
+Thumbing.db

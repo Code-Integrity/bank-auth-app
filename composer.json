@@ -9,14 +9,15 @@
     ],
     "license": "MIT",
     "require": {
-        "fakerphp/faker": "^1.23",
         "php": "8.4.*",
         "ext-pdo_pgsql": "*",
+        "fakerphp/faker": "^1.23",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^11.31",
         "laravel/jetstream": "^5.5",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "sentry/sentry-laravel": "*",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
