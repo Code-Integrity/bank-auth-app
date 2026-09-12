@@ -14,6 +14,7 @@ const props = defineProps({
 });
 
 const form = useForm({
+    _method: "PUT",
     name: props.user.name,
     email: props.user.email,
     photo: null,
@@ -24,48 +25,23 @@ const photoPreview = ref(null);
 const photoInput = ref(null);
 
 const updateProfileInformation = () => {
-    if (form.processing) return;
-    form.processing = true;
-    form.clearErrors();
-
     if (photoInput.value) {
         form.photo = photoInput.value.files[0];
     }
 
-    const formData = new FormData();
-    formData.append("_method", "PUT");
-    formData.append("name", form.name);
-    formData.append("email", form.email);
-    if (form.photo) {
-        formData.append("photo", form.photo);
-    }
+    form.name = String(form.name).trim();
+    form.email = String(form.email).trim();
 
-    axios
-        .post(route("user-profile-information.update"), formData, {
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "multipart/form-data",
-                "X-Requested-With": "XMLHttpRequest",
-            },
-        })
-        .then((response) => {
-            form.processing = false;
-
-            router.reload({ only: ["auth"] });
-
-            form.recentlySuccessful = true;
-            setTimeout(() => (form.recentlySuccessful = false), 3000);
-        })
-        .catch((error) => {
-            form.processing = false;
-            if (
-                error.response &&
-                error.response.data &&
-                error.response.data.errors
-            ) {
-                form.errors = error.response.data.errors;
-            }
-        });
+    form.post(route("user-profile-information.update"), {
+        errorBag: "updateProfileInformation",
+        preserveScroll: true,
+        onSuccess: () => {
+            clearPhotoFileInput();
+        },
+        onError: (errors) => {
+            console.error("Profile update failed:", errors);
+        },
+    });
 };
 
 const sendEmailVerification = () => {

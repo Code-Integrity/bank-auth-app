@@ -124,6 +124,19 @@ To trigger the complete test suite and verify the **100.0% total system coverage
 
 ---
 
+## 🔒 Strategic Sandbox Isolation & Data Immutability
+
+Please note that the local/online live demo environment is intentionally orchestrated in a **stateless, isolated sandbox perimeter** to strictly align with PSD2/RTS compliance and enterprise audit principles:
+
+1. **Audit Log Immutability (EBA/PSD2 Compliant)**:
+   To preserve the absolute integrity and strict referential transparency of cryptographic audit logs, the core database state is structurally frozen. Destructive or arbitrary data mutations (such as permanent profile updates or account deletions) are blocked at the infrastructure layer to prevent temporal discrepancies in compliance records.
+2. **Demo Idempotency for the 90-Day Isolation Workflow**:
+   The forced isolation middleware (`EnsurePasswordNotExpired`) requires a persistent, exact historical timestamp to demo the user redirection flow gracefully. Bypassing state persistence ensures that the 90-day expiration hurdle can be tested repeatedly and reliably without manual database re-seeding.
+3. **MFA & Stateless Orchestration**:
+   Multi-Factor Authentication (MFA/2FA) utilizing TOTP algorithms operates entirely on stateless, deterministic time-slice verification and session-state synchronization. Thus, MFA remains 100% functional within this isolated perimeter without requiring database persistence.
+
+---
+
 ## 🚀 Live Demo & Roadmap (Phase 4)
 
 - **Live Demo**: _[Coming Soon / Link to Railway Deployment]_

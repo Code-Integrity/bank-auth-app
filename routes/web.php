@@ -27,7 +27,7 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::get('/user/audit-logs', [AuditLogController::class, 'index'])->name('user.audit-logs');
+    Route::get('/user/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
 
     Route::get('/user/password-expired', function () {
         return Inertia::render('Auth/PasswordExpired');
@@ -41,7 +41,7 @@ Route::middleware([
                 'required',
                 'string',
                 'confirmed',
-                'min:8',
+                'min:12',
 
                 Password::defaults()->mixedCase()->numbers()->symbols(),
             ],
@@ -65,6 +65,6 @@ Route::middleware([
             'user_agent' => $request->userAgent(),
         ]);
 
-        return back()->with('status', 'password-updated');
+        return Inertia::location(url('/dashboard'));
     })->name('user.password-expired.update');
 });
