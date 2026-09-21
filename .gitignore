@@ -27,3 +27,11 @@ yarn-error.log
 database/*.sqlite
 database/*.sqlite-journal
 /coverage-report
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

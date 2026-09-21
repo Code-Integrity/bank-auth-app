@@ -11,6 +11,16 @@ Designed as a bulletproof proof-of-concept (PoC) that showcases **100.0% Test Co
 
 ---
 
+## 🎬 End-to-End UX & Security Demonstration
+
+Stateless and isolated environment demonstration via **Playwright E2E**:
+
+<p align="center">
+  <img src=".github/assets/ux-demo.gif" alt="AegisBank Auth Core UX Demo" width="750" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+</p>
+
+---
+
 ## 📈 Engineering Quality Strategy
 
 - **Test-Driven Rigor**: 100% strict test coverage defended via **Pest 3.x** and **PCOV**. Every edge case in security middleware and rate limiters is structurally validated.

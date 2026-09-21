@@ -1,8 +1,8 @@
 # 🔒 Critical Security Secrets
 .env
 .env.*
-.git
-.github
+/.git
+/.github
 storage/*.key
 
 # 📦 Dependencies (Should be installed freshly inside containers)
@@ -33,3 +33,11 @@ storage/logs/*
 .vscode/
 .DS_Store
 Thumbing.db
+
+# =============================================================================
+# Playwright End-to-End Testing Artifacts & Browser Cache (DLP Enforcement)
+# =============================================================================
+test-results/
+playwright-report/
+blob-report/
+playwright/
