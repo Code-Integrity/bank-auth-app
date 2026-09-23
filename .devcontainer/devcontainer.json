@@ -1,8 +1,9 @@
 {
     "name": "AegisBank-Auth-Core Dev Environment",
     "dockerComposeFile": ["../compose.yaml"],
+    // 💡 変更点1: サービスの指定を明示
     "service": "laravel.test",
-    "workspaceFolder": "/var/www/html",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
     "features": {
         "ghcr.io/devcontainers/features/github-cli:1": {}
     },
@@ -17,7 +18,9 @@
             ]
         }
     },
-    "remoteUser": "sail",
-    // 💡 競合を避けるため、コンテナの「外側（GitHubインフラ側）」の特権を使って、裏で全自動セットアップ＆サーバー起動を1タスクで完遂させます
-    "onCreateCommand": "cp .env.example .env && composer install && npm install && npm run build && php artisan key:generate && php artisan migrate --seed && php artisan serve --host=0.0.0.0 --port=8080"
+    // 💡 変更点2: 権限エラーを永久封殺するため、Codespaces標準のユーザー(vscode)に権限を一本化します
+    "remoteUser": "vscode",
+
+    // 💡 変更点3: 特権エラーに邪魔されないタイミングで、環境構築からサーバー起動(8080番)まで全自動完遂させます
+    "postCreateCommand": "cp .env.example .env && composer install && npm install && npm run build && php artisan key:generate && php artisan migrate --seed && php artisan serve --host=0.0.0.0 --port=8080"
 }
