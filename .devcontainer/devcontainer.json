@@ -2,7 +2,8 @@
     "name": "AegisBank-Auth-Core Dev Environment",
     "dockerComposeFile": ["../compose.yaml"],
     "service": "laravel.test",
-    "workspaceFolder": "/var/www/html",
+    // 💡 Codespacesが自動生成する標準ワークスペースフォルダをそのまま正解として使用します
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
     "features": {
         "ghcr.io/devcontainers/features/github-cli:1": {}
     },
@@ -17,11 +18,7 @@
             ]
         }
     },
-
     "remoteUser": "sail",
-    // 💡 以下の2行を新しく追加して、ソースコードの場所をCodespacesに100.0%正確に伝えます
-    "workspaceMount": "source=${localWorkspaceFolder},target=/var/www/html,type=bind,consistency=cached",
-    "workspaceFolder": "/var/www/html",
-
+    // 💡 コンテナ起動後に、必要な環境設定、パッケージ導入、ハッシュ化デモDB注入までを一撃で全自動実行します
     "postCreateCommand": "cp .env.example .env && composer install && npm install && npm run build && php artisan key:generate && php artisan migrate --seed"
 }
