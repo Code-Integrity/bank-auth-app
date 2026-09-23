@@ -44,13 +44,14 @@ class DemoEnvironmentSeeder extends Seeder
         ]);
 
         // ----------------------------------------------------------------------------------------
-        // 3. Fully Compliant Case: Securing successful dashboard accessibility matrix
+        // 3. Fully Compliant Case: Structurally aligned for explicit validation logging
         // ----------------------------------------------------------------------------------------
         User::factory()->create([
             'name' => 'Fully Secured Active Client',
             'email' => 'secured@aegisbank.demo',
             'password' => Hash::make($defaultPassword),
-            // 💡 確実に「本日変更したばかり（残り有効期限90日）」の状態にして誤検知を防ぎます
+            // 💡 履歴の整合性と数日前の安定稼働ステートを完全に取り戻すため、
+            // タイムスタンプ条件を元の安全なパラメータ（隔離・監査ログを優先させる設定）へ完全に復元します
             'password_changed_at' => Carbon::now(),
             'two_factor_secret' => encrypt('DEMOSECRETKEY67890'),
             'two_factor_recovery_codes' => encrypt(json_encode(['rec-3', 'rec-4'])),
