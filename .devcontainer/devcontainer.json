@@ -1,6 +1,6 @@
 {
     "name": "AegisBank-Auth-Core Dev Environment",
-    "dockerComposeFile": ["../docker-compose.yml"],
+    "dockerComposeFile": ["../compose.yaml"],
     "service": "laravel.test",
     "workspaceFolder": "/var/www/html",
     "features": {
