@@ -50,6 +50,7 @@ class DemoEnvironmentSeeder extends Seeder
             'name' => 'Fully Secured Active Client',
             'email' => 'secured@aegisbank.demo',
             'password' => Hash::make($defaultPassword),
+            // 💡 確実に「本日変更したばかり（残り有効期限90日）」の状態にして誤検知を防ぎます
             'password_changed_at' => Carbon::now(),
             'two_factor_secret' => encrypt('DEMOSECRETKEY67890'),
             'two_factor_recovery_codes' => encrypt(json_encode(['rec-3', 'rec-4'])),
