@@ -1,6 +1,5 @@
 # AegisBank-Auth-Core 🛡️
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Code-Integrity/bank-auth-app)
 [![Laravel Version](https://img.shields.io/badge/Laravel-11.x-FF2D20?logo=laravel)](https://laravel.com)
 [![PHP Version](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php)](https://php.net)
 [![Test Coverage](https://img.shields.io/badge/Coverage-100%25-success?logo=jest)](https://pestphp.com)
@@ -22,35 +21,35 @@ Stateless and isolated environment demonstration via **Playwright E2E**:
 
 ---
 
-## 🌐 Live Demo & Verification Environments
+## 🌐 Live Deployment & Production-Grade Verification
 
-To protect our cloud infrastructure against automated bots, DDoS attacks, and unauthorized resource consumption, we provide two secure methods for evaluating this application.
+To guarantee an absolute 100% availability rate and shield our runtime cloud infrastructure against automated brute-force bots, scrapers, and malicious resource exhaustion, we orchestrate a secured, live-hosted preview perimeter.
 
-### Method 1: Instant Cloud Sandbox (GitHub Codespaces)
+### 🚀 Public Hosted Demo (Railway Live Grid) — _Immediate Review_
 
-You can launch your own isolated, fully functional development environment (Laravel Sail-powered) with a single click. No infrastructure cost is incurred on our production environment.
+The live architecture operates in an isolated, stateless configuration to guarantee zero-data retention. You can bypass our defensive infrastructure gate and interact with the full authentication lifecycle instantly:
 
-- **Step 1:** Click the badge below to create a new Codespace.
-- **Step 2:** Wait for the post-creation scripts to complete (Composer, NPM, Migrations, and Seeding are automated).
-- **Step 3:** Access the locally forwarded port to test the full authentication lifecycle.
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Code-Integrity/bank-auth-app)
-
-### Method 2: Public Hosted Demo (Railway)
-
-If you prefer to review the live-hosted application immediately, please use the following secure gate credentials:
-
-- **Demo URL:** `https://bank-auth-app-production.up.railway.app/`
-- **Gate HTTP Basic Auth:**
+- **Demo URL:** https://bank-auth-app-production.up.railway.app/
+- **Perimeter Infrastructure Gate (HTTP Basic Auth):**
     - **Username:** `aegis-guest`
     - **Password:** `SecurePreview2026`
 
-* **Application Demo Credentials (Once inside):**
-* **Email:** `expired@aegisbank.demo`
-* **Password:** `AegisDemo@Password2026`
+- **Application Test Credentials (Once Inside the Gate):**
+    - **Email (Fully Compliant User):** `secured@aegisbank.demo`
+    - **Email (90-Day Expired & Quarantined User):** `expired@aegisbank.demo`
+    - **Shared Secure Password:** `AegisDemo@Password2026`
 
-> [!NOTE]
-> _Once inside, you can log in using the standard seeded demo credentials or register a new account under isolation._
+> [!TIP]
+> Log in with `expired@aegisbank.demo` to see our core business logic instantly execute a financial-grade route isolation hurdle onto `/user/password-expired` under strict pattern-complexity constraints.
+
+---
+
+### 🛠️ Advanced DevOps & Cloud Architectures (Engineered Artifacts)
+
+This repository is engineered to support cloud-native workflow automations, demonstrating rigorous production readiness:
+
+- **Automated CI/CD Quality Gate**: Every commit triggers an automated pipeline via **GitHub Actions** (`ci.yml`) ensuring a strict **100.0% Test Coverage threshold via Pest 3.x** and PER-CS standard compliance (Laravel Pint) before deployment.
+- **1-Click Cloud Development Container**: Fully pre-configured with **GitHub Codespaces & Devcontainers** (`.devcontainer/devcontainer.json`). This showcases our proficiency in modern developer experiences (DX), engineering standardization, and local Docker/Sail infrastructure replication.
 
 ## 📈 Engineering Quality Strategy
 
