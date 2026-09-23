@@ -1,9 +1,10 @@
 # AegisBank-Auth-Core 🛡️
 
-[![Laravel Version](https://shields.io)](https://laravel.com)
-[![PHP Version](https://shields.io)](https://php.net)
-[![Test Coverage](https://shields.io)](https://pestphp.com)
-[![License](https://shields.io)](LICENSE)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Code-Integrity/bank-auth-app)
+[![Laravel Version](https://img.shields.io/badge/Laravel-11.x-FF2D20?logo=laravel)](https://laravel.com)
+[![PHP Version](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php)](https://php.net)
+[![Test Coverage](https://img.shields.io/badge/Coverage-100%25-success?logo=jest)](https://pestphp.com)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue)](LICENSE)
 
 A high-security, regulatory-compliant authentication architecture engineered with **Laravel 11, Jetstream (Inertia.js + Vue 3), and Pest 3.x**. This application is strictly designed to meet European banking-grade security standards, aligning with the core requirements of **PSD2/RTS (Revised Payment Services Directive / Regulatory Technical Standards)** and **EBA (European Banking Authority) Guidelines**.
 
@@ -20,6 +21,36 @@ Stateless and isolated environment demonstration via **Playwright E2E**:
 </p>
 
 ---
+
+## 🌐 Live Demo & Verification Environments
+
+To protect our cloud infrastructure against automated bots, DDoS attacks, and unauthorized resource consumption, we provide two secure methods for evaluating this application.
+
+### Method 1: Instant Cloud Sandbox (GitHub Codespaces)
+
+You can launch your own isolated, fully functional development environment (Laravel Sail-powered) with a single click. No infrastructure cost is incurred on our production environment.
+
+- **Step 1:** Click the badge below to create a new Codespace.
+- **Step 2:** Wait for the post-creation scripts to complete (Composer, NPM, Migrations, and Seeding are automated).
+- **Step 3:** Access the locally forwarded port to test the full authentication lifecycle.
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Code-Integrity/bank-auth-app)
+
+### Method 2: Public Hosted Demo (Railway)
+
+If you prefer to review the live-hosted application immediately, please use the following secure gate credentials:
+
+- **Demo URL:** `https://bank-auth-app-production.up.railway.app/`
+- **Gate HTTP Basic Auth:**
+    - **Username:** `aegis-guest`
+    - **Password:** `SecurePreview2026`
+
+* **Application Demo Credentials (Once inside):**
+* **Email:** `expired@aegisbank.demo`
+* **Password:** `AegisDemo@Password2026`
+
+> [!NOTE]
+> _Once inside, you can log in using the standard seeded demo credentials or register a new account under isolation._
 
 ## 📈 Engineering Quality Strategy
 
@@ -93,7 +124,7 @@ Every mission-critical security milestone (`security.password.expired`, `securit
 
 1. **Clone the Repository:**
     ```bash
-    git clone https://github.com
+    git clone https://github.com/Code-Integrity/bank-auth-app.git
     cd AegisBank-Auth-Core
     ```
 2. **Environment Configuration:**
@@ -160,12 +191,11 @@ Please note that the local/online live demo environment is intentionally orchest
 
 ---
 
-## 🚀 Live Demo & Roadmap (Phase 4)
+## 🚀 Next Milestones & Roadmap
 
-- **Live Demo**: https://bank-auth-app-production.up.railway.app/
-- **CI/CD Integration**: Formalizing Pest coverage gating in GitHub Actions.
-- **Structural Upgrade**: Gradual framework upgrade to sync with modern enterprise LTS lifecycles.
-- **FIDO2 / Passkey Support**: WebAuthn integration for seamless biometric authentication.
+- **Phase 4: CI/CD Pipeline Integration**: GitHub Actions enforcement for 100% coverage and Pint styling.
+- **Biometric Security**: FIDO2 / Passkey support via WebAuthn.
+- **Structural Upgrade**: Enterprise LTS lifecycle synchronization.
 
 ---
 

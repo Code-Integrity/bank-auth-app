@@ -1,0 +1,22 @@
+{
+    "name": "AegisBank-Auth-Core Dev Environment",
+    "dockerComposeFile": ["../docker-compose.yml"],
+    "service": "laravel.test",
+    "workspaceFolder": "/var/www/html",
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "amiralia.laraphense",
+                "onecentlin.laravel-blade",
+                "onecentlin.laravel5-snippets",
+                "calebporzio.better-phpunit",
+                "junstyle.php-cs-fixer"
+            ]
+        }
+    },
+    "remoteUser": "sail",
+    "postCreateCommand": "cp .env.example .env && composer install && npm install && npm run build && php artisan key:generate && php artisan migrate --seed"
+}
