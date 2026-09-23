@@ -14,8 +14,8 @@ class DemoEnvironmentSeeder extends Seeder
      */
     public function run(): void
     {
-
-        $defaultPassword = 'Password123!';
+        // 💡 12文字以上の要件を満たす金融グレードの共通公開ダミーパスワードへ最適化
+        $defaultPassword = 'AegisDemo@Password2026';
 
         // -----------------------------------------------------------------------------------------
         // 1. Password Expired Case: Forcing structural quarantine validation (90-day policy breach)
@@ -23,8 +23,8 @@ class DemoEnvironmentSeeder extends Seeder
         User::factory()->create([
             'name' => 'Expired Password Demo Client',
             'email' => 'expired@aegisbank.demo',
-            'password' => Hash::make($defaultPassword),
-            'password_changed_at' => Carbon::now()->subDays(91),
+            'password' => Hash::make($defaultPassword), // 安全にハッシュ化して格納
+            'password_changed_at' => Carbon::now()->subDays(95), // 90日経過を確実にシミュレート
             'two_factor_secret' => encrypt('DEMOSECRETKEY12345'),
             'two_factor_recovery_codes' => encrypt(json_encode(['rec-1', 'rec-2'])),
             'email_verified_at' => Carbon::now(),
