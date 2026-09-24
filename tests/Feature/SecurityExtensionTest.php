@@ -154,3 +154,42 @@ test('middleware resilience: guarantees that system redirection and quarantine s
 
     AuditLog::flushEventListeners();
 });
+
+/* --- 🔐 Fortify Custom LoginResponse Pipeline Verification --- */
+
+test('login response: intercepts login and dynamically forces 409 conflict for expired users', function () {
+    $user = User::factory()->create([
+        'password' => Hash::make('AegisDemo@Password2026'),
+        'password_changed_at' => Carbon::now()->subDays(91),
+        'two_factor_secret' => encrypt('test-secret'),
+        'two_factor_confirmed_at' => Carbon::now(),
+    ]);
+
+    // X-Inertiaヘッダーを付与してログイン（POST）を実行
+    $response = $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'AegisDemo@Password2026',
+    ], ['X-Inertia' => 'true']);
+
+    // 409 Conflictと隔離先URLが返ってくることをアサート（行 67..70 をカバー）
+    $response->assertStatus(409);
+    $response->assertHeader('X-Inertia-Location', route('user.password-expired'));
+});
+
+test('login response: allows compliant users to log in normally and clear the custom response pipeline', function () {
+    $user = User::factory()->create([
+        'password' => Hash::make('AegisDemo@Password2026'),
+        'password_changed_at' => Carbon::now()->subDays(10), // 10日前に変更（安全）
+        'two_factor_secret' => encrypt('test-secret'),
+        'two_factor_confirmed_at' => Carbon::now(),
+    ]);
+
+    $response = $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'AegisDemo@Password2026',
+    ]);
+
+    // 通常ユーザーは、設定されたFortifyのHOME（/dashboard等）へ302リダイレクトされることをアサート（行 75 をカバー）
+    $response->assertStatus(302);
+    $response->assertRedirect(config('fortify.home'));
+});
