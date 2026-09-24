@@ -45,7 +45,7 @@ class EnsurePasswordNotExpired
                     'payload' => json_encode(['last_changed_at' => $lastChanged->toIso8601String()]),
                 ]);
             } catch (\Exception $e) {
-                Log::error('Audit log failed during password expiration: ' . $e->getMessage());
+                Log::error('Audit log failed during password expiration: '.$e->getMessage());
             }
 
             // [Strategic Fix] Handle Inertia SPA routing conflict explicitly.

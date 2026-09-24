@@ -38,7 +38,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });
@@ -51,13 +51,14 @@ class FortifyServiceProvider extends ServiceProvider
             $credentialId = $request->input('credential.id');
 
             return Limit::perMinute(10)->by(
-                ($credentialId ?: $request->session()->getId()) . '|' . $request->ip()
+                ($credentialId ?: $request->session()->getId()).'|'.$request->ip()
             );
         });
 
         // [Strategic Fix] Override Fortify Login Response to prevent Inertia SPA Plain JSON Crash.
         // This ensures that when a user logs in, Fortify respects Inertia's routing behavior.
-        $this->app->instance(LoginResponse::class, new class implements LoginResponse {
+        $this->app->instance(LoginResponse::class, new class implements LoginResponse
+        {
             public function toResponse($request)
             {
                 $user = $request->user();
@@ -67,6 +68,7 @@ class FortifyServiceProvider extends ServiceProvider
                     if ($request->hasHeader('X-Inertia') || $request->inertia()) {
                         return response('', 409)->header('X-Inertia-Location', route('user.password-expired'));
                     }
+
                     return redirect()->route('user.password-expired');
                 }
 
