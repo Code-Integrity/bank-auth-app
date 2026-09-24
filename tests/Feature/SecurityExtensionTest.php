@@ -42,6 +42,23 @@ test('middleware: forcefully isolates expired users past the 90-day validity win
     ]);
 });
 
+// [Strategic Test Added] Verifies the Inertia 409 SPA conflict bypass pipeline under asynchronous context.
+test('middleware: intercept and returns a strategic 409 conflict status code for asynchronous Inertia requests when password expires', function () {
+    $user = User::factory()->create([
+        'password_changed_at' => Carbon::now()->subDays(91),
+        'two_factor_secret' => encrypt('test-secret'),
+        'two_factor_confirmed_at' => Carbon::now(),
+    ]);
+
+    // Explicitly append the X-Inertia header to mimic standard client-side SPA routing request
+    $response = $this->actingAs($user)->get('/dashboard', [
+        'X-Inertia' => 'true',
+    ]);
+
+    $response->assertStatus(409);
+    $response->assertHeader('X-Inertia-Location', route('user.password-expired'));
+});
+
 test('middleware: prevents route looping and allows quarantined users to access the expiration view or logout endpoints seamlessly', function () {
     $user = User::factory()->create([
         'password_changed_at' => Carbon::now()->subDays(91),
