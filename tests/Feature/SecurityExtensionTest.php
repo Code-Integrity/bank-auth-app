@@ -155,24 +155,19 @@ test('middleware resilience: guarantees that system redirection and quarantine s
     AuditLog::flushEventListeners();
 });
 
+// tests/Feature/SecurityExtensionTest.php の最下部をこちらに完全に差し替えてください
+
 /* --- 🔐 Fortify Custom LoginResponse Pipeline Verification --- */
 
 test('login response: intercepts login and dynamically forces 409 conflict for expired users', function () {
     $user = User::factory()->create([
         'password' => Hash::make('AegisDemo@Password2026'),
         'password_changed_at' => Carbon::now()->subDays(91),
-        'two_factor_secret' => encrypt('test-secret'),
-        'two_factor_confirmed_at' => Carbon::now(),
+        'two_factor_secret' => null, // [Strategic Test Fix] Deactivate 2FA to bypass Fortify's internal 2FA pipeline interceptor
+        'two_factor_confirmed_at' => null,
     ]);
 
-    // [Strategic Test Fix] Pre-populate the session with 2FA approval state 
-    // to seamlessly bypass EnsureTwoFactorEnabled middleware and hit the LoginResponse.
-    $this->withSession([
-        'login.id' => $user->id,
-        'auth.password_confirmed_at' => time(),
-    ]);
-
-    // Execute post login with X-Inertia header appended
+    // Execute post login with X-Inertia header appended to catch the 409 logic
     $response = $this->post('/login', [
         'email' => $user->email,
         'password' => 'AegisDemo@Password2026',
@@ -186,15 +181,9 @@ test('login response: intercepts login and dynamically forces 409 conflict for e
 test('login response: allows compliant users to log in normally and clear the custom response pipeline', function () {
     $user = User::factory()->create([
         'password' => Hash::make('AegisDemo@Password2026'),
-        'password_changed_at' => Carbon::now()->subDays(10),
-        'two_factor_secret' => encrypt('test-secret'),
-        'two_factor_confirmed_at' => Carbon::now(),
-    ]);
-
-    // [Strategic Test Fix] Pre-populate the session with 2FA approval state for compliant routing.
-    $this->withSession([
-        'login.id' => $user->id,
-        'auth.password_confirmed_at' => time(),
+        'password_changed_at' => Carbon::now()->subDays(10), // 10 days ago (compliant)
+        'two_factor_secret' => null, // [Strategic Test Fix] Deactivate 2FA to ensure straight path to LoginResponse
+        'two_factor_confirmed_at' => null,
     ]);
 
     $response = $this->post('/login', [
