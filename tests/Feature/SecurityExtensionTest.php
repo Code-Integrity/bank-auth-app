@@ -159,39 +159,56 @@ test('middleware resilience: guarantees that system redirection and quarantine s
 
 /* --- 🔐 Fortify Custom LoginResponse Pipeline Verification --- */
 
-test('login response: intercepts login and dynamically forces 409 conflict for expired users', function () {
+test('login response: intercepts login and dynamically forces 409 conflict for expired users via inertia', function () {
     $user = User::factory()->create([
         'password' => Hash::make('AegisDemo@Password2026'),
         'password_changed_at' => Carbon::now()->subDays(91),
-        'two_factor_secret' => null, // [Strategic Test Fix] Deactivate 2FA to bypass Fortify's internal 2FA pipeline interceptor
+        'two_factor_secret' => null,
         'two_factor_confirmed_at' => null,
     ]);
 
-    // Execute post login with X-Inertia header appended to catch the 409 logic
+    // Route 1: Expired + Inertia Request
     $response = $this->post('/login', [
         'email' => $user->email,
         'password' => 'AegisDemo@Password2026',
     ], ['X-Inertia' => 'true']);
 
-    // Asserts 409 Conflict status code along with the target quarantine URI header.
     $response->assertStatus(409);
     $response->assertHeader('X-Inertia-Location', route('user.password-expired'));
 });
 
-test('login response: allows compliant users to log in normally and clear the custom response pipeline', function () {
+test('login response: redirects to quarantine view for expired users via standard http request', function () {
     $user = User::factory()->create([
         'password' => Hash::make('AegisDemo@Password2026'),
-        'password_changed_at' => Carbon::now()->subDays(10), // 10 days ago (compliant)
-        'two_factor_secret' => null, // [Strategic Test Fix] Deactivate 2FA to ensure straight path to LoginResponse
+        'password_changed_at' => Carbon::now()->subDays(91),
+        'two_factor_secret' => null,
         'two_factor_confirmed_at' => null,
     ]);
 
+    // Route 2: [Strategic Fix] Expired + Standard HTTP Request (No Inertia Header)
     $response = $this->post('/login', [
         'email' => $user->email,
         'password' => 'AegisDemo@Password2026',
     ]);
 
-    // Asserts successful redirection to the designated application home route.
+    $response->assertStatus(302);
+    $response->assertRedirect(route('user.password-expired'));
+});
+
+test('login response: allows compliant users to log in normally and clear the custom response pipeline', function () {
+    $user = User::factory()->create([
+        'password' => Hash::make('AegisDemo@Password2026'),
+        'password_changed_at' => Carbon::now()->subDays(10),
+        'two_factor_secret' => null,
+        'two_factor_confirmed_at' => null,
+    ]);
+
+    // Route 3: Compliant + Standard HTTP Request
+    $response = $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'AegisDemo@Password2026',
+    ]);
+
     $response->assertStatus(302);
     $response->assertRedirect(config('fortify.home'));
 });
