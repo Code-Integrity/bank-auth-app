@@ -155,8 +155,6 @@ test('middleware resilience: guarantees that system redirection and quarantine s
     AuditLog::flushEventListeners();
 });
 
-// tests/Feature/SecurityExtensionTest.php の最下部をこちらに完全に差し替えてください
-
 /* --- 🔐 Fortify Custom LoginResponse Pipeline Verification --- */
 
 test('login response: intercepts login and dynamically forces 409 conflict for expired users via inertia', function () {

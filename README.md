@@ -5,15 +5,19 @@
 [![Test Coverage](https://img.shields.io/badge/Coverage-100%25-success?logo=jest)](https://pestphp.com)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue)](LICENSE)
 
-A high-security, regulatory-compliant authentication architecture engineered with **Laravel 11, Jetstream (Inertia.js + Vue 3), and Pest 3.x**. This application is strictly designed to meet European banking-grade security standards, aligning with the core requirements of **PSD2/RTS (Revised Payment Services Directive / Regulatory Technical Standards)** and **EBA (European Banking Authority) Guidelines**.
+A high-security, regulatory-compliant authentication architecture engineered with **Laravel 11, Jetstream (Inertia.js + Vue 3), Fortify, and Pest 3.x**. This application is strictly designed to meet European banking-grade security standards, aligning with the core requirements of **PSD2/RTS (Revised Payment Services Directive / Regulatory Technical Standards)** and **EBA (European Banking Authority) Guidelines**.
 
-Designed as a bulletproof proof-of-concept (PoC) that showcases **100.0% Test Coverage via Pest 3.x**, strict session isolation, and real-time data leak protection required for global-tier engineering roles.
+Designed as a bulletproof proof-of-concept (PoC), this portfolio showcases **100.0% Test Coverage via Pest 3.x**, strict session isolation, explicit Inertia 409 routing conflict bypasses, and real-time data leak protection (DLP) required for global-tier engineering roles.
 
 ---
 
 ## 🎬 End-to-End UX & Security Demonstration
 
 Stateless and isolated environment demonstration via **Playwright E2E**:
+
+<p align="center">
+  <img src="images/demo-walkthrough.gif" alt="AegisBank Auth Core UX Demo" width="750" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+</p>
 
 <p align="center">
   <img src=".github/assets/ux-demo.gif" alt="AegisBank Auth Core UX Demo" width="750" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
@@ -35,7 +39,6 @@ The live architecture operates in an isolated, stateless configuration to guaran
     - **Password:** `SecurePreview2026`
 
 - **Application Test Credentials (Once Inside the Gate):**
-    - **Email (Fully Compliant User):** `secured@aegisbank.demo`
     - **Email (90-Day Expired & Quarantined User):** `expired@aegisbank.demo`
     - **Shared Secure Password:** `AegisDemo@Password2026`
 
@@ -44,19 +47,28 @@ The live architecture operates in an isolated, stateless configuration to guaran
 
 ---
 
-### 🛠️ Advanced DevOps & Cloud Architectures (Engineered Artifacts)
+## 🔒 Strategic Sandbox Architecture & Data Immutability
 
-This repository is engineered to support cloud-native workflow automations, demonstrating rigorous production readiness:
+To align strictly with the core compliance principles of **PSD2/RTS and EBA Guidelines**, this global live demonstration environment is intentionally orchestrated within a **100% Stateless and Isolated Sandbox Perimeter**.
 
-- **Automated CI/CD Quality Gate**: Every commit triggers an automated pipeline via **GitHub Actions** (`ci.yml`) ensuring a strict **100.0% Test Coverage threshold via Pest 3.x** and PER-CS standard compliance (Laravel Pint) before deployment.
-- **1-Click Cloud Development Container**: Fully pre-configured with **GitHub Codespaces & Devcontainers** (`.devcontainer/devcontainer.json`). This showcases our proficiency in modern developer experiences (DX), engineering standardization, and local Docker/Sail infrastructure replication.
+Below is the strategic engineering rationale and defensive boundaries behind choosing a stateless storage layout:
 
-## 📈 Engineering Quality Strategy
+### 1. Absolute Demo Idempotency & Repeatable Review Experience
 
-- **Test-Driven Rigor**: 100% strict test coverage defended via **Pest 3.x** and **PCOV**. Every edge case in security middleware and rate limiters is structurally validated.
-- **Resilient Middleware Architecture**: All defensive guardrails are fully isolated with explicit exception handling (`try-catch` structures) ensuring failure-free redirection mechanisms during system or database anomalies (e.g., preventing 500 crashes during audit log DB failure).
-- **Intentional Error Verbose**: Detailed validation messages are explicitly retained in this PoC layer to streamline reviewer verification and frontend state debugging; in a strict production environment, these are wrapped behind obfuscated generic exceptions to mitigate enumeration vectors.
-- **Production-Validated**: Verified against physical target DB environments utilizing multi-layered dummy credential sequences, eliminating structural gaps between local testing and production realities.
+A traditional, stateful authentication lifecycle modifies database records permanently upon actions like password resets. In a public preview environment reviewed by multiple global hiring managers concurrently, state mutations would cause continuous data corruption and test loop deadlocks. By decoupling state persistence from the routing layer, we guarantee **100% Demo Idempotency** — ensuring every reviewer experiences the identical, pristine security quarantine workflow seamlessly without manual database re-seeding.
+
+### 2. Infrastructure Cost Defense & Attack Surface Minimization
+
+Exposing a mutable, live database write pipeline to a public repository invites critical infrastructure risks, such as automated brute-force bots, DDoS resource exhaustion, and unnecessary cloud billing spikes. Architecting this preview layer to operate statelessly ensures zero database write bottlenecks, defending our cloud compute resources while providing full interaction capabilities.
+
+### 3. Verification of Strong Customer Authentication (SCA) for Log Access
+
+In strict adherence to PSD2/RTS guidelines for access to highly sensitive operational records, checking the encryption-secured security audit logs (`security.password.expired`, etc.) is isolated behind a rigid multi-factor gate. After completing the forced 90-day password isolation reset, the user is required to clear **Multi-Factor Authentication (MFA/2FA)**. Passing both the Knowledge factor (New Password) and Possession/Biometric factor (Deterministic TOTP Session State) mimics a complete, production-ready financial ecosystem before authorization to the audit trail is granted.
+
+### 4. Architectural Boundary Verification via `405 Method Not Allowed`
+
+To preserve the absolute integrity and strict referential transparency of corporate compliance records, destructive or state-mutating actions (such as permanent user profile modifications, account deletions, or flushing external session records via "Log Out Other Browser Sessions") are intentionally blocked at the infrastructure routing layer.
+When a user attempts these destructive operations, the application securely intercepts the request and responds with a strict **405 Method Not Allowed** status. This is an intentional security boundary that safeguards the public sandbox environment from arbitrary pollution, proving that the underlying codebase enforces absolute data immutability and environmental non-repudiation.
 
 ---
 
@@ -72,7 +84,7 @@ This repository is engineered to support cloud-native workflow automations, demo
 - **Dual-Pipeline Rate Limiting (`login-account` | `login-ip`)**: Implements two completely decoupled throttling pipelines executing synchronously:
     - **Per-Account Limiter**: Restricts discrete account targeting to a maximum of 3 failed attempts per minute.
     - **Per-IP Limiter**: Caps continuous local infrastructure origin attacks to 5 failed attempts per minute across multiple credentials.
-- **Lockout Penalty**: Immediate 15-minute global cool-down response containing precise structured JSON status codes (`429 Too Requests`).
+- **Lockout Penalty**: Immediate 15-minute global cool-down response containing precise structured JSON status codes (`429 Too Many Requests`).
 
 ### 3. Regulatory Password Lifecycles & Complex Policies
 
@@ -155,46 +167,39 @@ To trigger the complete test suite and verify the **100.0% total system coverage
 ```
 
 ```text
-  Actions/Fortify/CreateNewUser ............................................................................... 100.0%
-  Actions/Fortify/PasswordValidationRules ..................................................................... 100.0%
-  Actions/Fortify/ResetUserPassword ........................................................................... 100.0%
-  Actions/Fortify/UpdateUserPassword .......................................................................... 100.0%
-  Actions/Fortify/UpdateUserProfileInformation ................................................................ 100.0%
-  Actions/Jetstream/DeleteUser ................................................................................ 100.0%
-  Http/Controllers/AuditLogController ......................................................................... 100.0%
-  Http/Controllers/Controller ................................................................................. 100.0%
-  Http/Middleware/EnsurePasswordNotExpired .................................................................... 100.0%
-  Http/Middleware/EnsureTwoFactorEnabled ...................................................................... 100.0%
-  Http/Middleware/HandleInertiaRequests ....................................................................... 100.0%
-  Models/AuditLog ............................................................................................. 100.0%
-  Models/User ................................................................................................. 100.0%
-  Providers/AppServiceProvider ................................................................................ 100.0%
-  Providers/FortifyServiceProvider ............................................................................ 100.0%
-  Providers/JetstreamServiceProvider .......................................................................... 100.0%
-  ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-                                                                                                        Total: 100.0 %
+Actions/Fortify/CreateNewUser ............................................................................... 100.0%
+Actions/Fortify/PasswordValidationRules ..................................................................... 100.0%
+Actions/Fortify/ResetUserPassword ........................................................................... 100.0%
+Actions/Fortify/UpdateUserPassword .......................................................................... 100.0%
+Actions/Fortify/UpdateUserProfileInformation ................................................................ 100.0%
+Actions/Jetstream/DeleteUser ................................................................................ 100.0%
+Http/Controllers/AuditLogController ......................................................................... 100.0%
+Http/Controllers/Controller ................................................................................. 100.0%
+Http/Middleware/EnsurePasswordNotExpired .................................................................... 100.0%
+Http/Middleware/EnsureTwoFactorEnabled ...................................................................... 100.0%
+Http/Middleware/HandleInertiaRequests ....................................................................... 100.0%
+Models/AuditLog ............................................................................................. 100.0%
+Models/User ................................................................................................. 100.0%
+Providers/AppServiceProvider ................................................................................ 100.0%
+Providers/FortifyServiceProvider ............................................................................ 100.0%
+Providers/JetstreamServiceProvider .......................................................................... 100.0%
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Total: 100.0 %
 ```
 
----
+## 🛠️ Advanced DevOps & Cloud Architectures (Engineered Artifacts)
 
-## 🔒 Strategic Sandbox Isolation & Data Immutability
-
-Please note that the local/online live demo environment is intentionally orchestrated in a **stateless, isolated sandbox perimeter** to strictly align with PSD2/RTS compliance and enterprise audit principles:
-
-1. **Audit Log Immutability (EBA/PSD2 Compliant)**:
-   To preserve the absolute integrity and strict referential transparency of cryptographic audit logs, the core database state is structurally frozen. Destructive or arbitrary data mutations (such as permanent profile updates or account deletions) are blocked at the infrastructure layer to prevent temporal discrepancies in compliance records.
-2. **Demo Idempotency for the 90-Day Isolation Workflow**:
-   The forced isolation middleware (`EnsurePasswordNotExpired`) requires a persistent, exact historical timestamp to demo the user redirection flow gracefully. Bypassing state persistence ensures that the 90-day expiration hurdle can be tested repeatedly and reliably without manual database re-seeding.
-3. **MFA & Stateless Orchestration**:
-   Multi-Factor Authentication (MFA/2FA) utilizing TOTP algorithms operates entirely on stateless, deterministic time-slice verification and session-state synchronization. Thus, MFA remains 100% functional within this isolated perimeter without requiring database persistence.
+- Automated CI/CD Quality Gate: Every commit triggers an automated pipeline via GitHub Actions (ci.yml) ensuring a strict 100.0% Test Coverage threshold via Pest 3.x and PER-CS standard compliance (Laravel Pint) before deployment.
+- 1-Click Cloud Development Container: Fully pre-configured with GitHub Codespaces & Devcontainers (.devcontainer/devcontainer.json). This showcases our proficiency in modern developer experiences (DX), engineering standardization, and local Docker/Sail infrastructure replication.
+- Resilient Middleware Architecture: All defensive guardrails are fully isolated with explicit exception handling (try-catch structures) ensuring failure-free redirection mechanisms during system or database anomalies (e.g., preventing 500 crashes during audit log DB failure).
 
 ---
 
 ## 🚀 Next Milestones & Roadmap
 
-- **Phase 4: CI/CD Pipeline Integration**: GitHub Actions enforcement for 100% coverage and Pint styling.
-- **Biometric Security**: FIDO2 / Passkey support via WebAuthn.
-- **Structural Upgrade**: Enterprise LTS lifecycle synchronization.
+- Phase 4: CI/CD Pipeline Integration: GitHub Actions enforcement for 100% coverage and Pint styling. (Completed)
+- Biometric Security: FIDO2 / Passkey support via WebAuthn.
+- Structural Upgrade: Enterprise LTS lifecycle synchronization.
 
 ---
 

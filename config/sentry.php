@@ -1,14 +1,15 @@
 <?php
 
+use Sentry\Event;
+
 return [
 
     'dsn' => env('SENTRY_LARAVEL_DSN'),
 
-
-    'before_send' => function (\Sentry\Event $event) {
+    'before_send' => function (Event $event) {
         $exceptions = $event->getExceptions();
 
-        if (!empty($exceptions)) {
+        if (! empty($exceptions)) {
             foreach ($exceptions as &$exception) {
                 if (isset($exception['value'])) {
 

@@ -105,7 +105,6 @@ return [
         ),
     ],
 
-
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver
@@ -129,8 +128,8 @@ return [
     | Demo Infrastructure Protection Gate
     |--------------------------------------------------------------------------
     */
-    'demo_basic_auth_enabled'  => env('DEMO_BASIC_AUTH_ENABLED', false),
-    'demo_basic_auth_user'     => env('DEMO_BASIC_AUTH_USER', 'aegis-guest'),
+    'demo_basic_auth_enabled' => env('DEMO_BASIC_AUTH_ENABLED', false),
+    'demo_basic_auth_user' => env('DEMO_BASIC_AUTH_USER', 'aegis-guest'),
     'demo_basic_auth_password' => env('DEMO_BASIC_AUTH_PASSWORD', 'SecurePreview2026'),
 
 ];
