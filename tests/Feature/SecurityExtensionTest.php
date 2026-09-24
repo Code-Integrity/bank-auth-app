@@ -154,3 +154,80 @@ test('middleware resilience: guarantees that system redirection and quarantine s
 
     AuditLog::flushEventListeners();
 });
+
+// tests/Feature/SecurityExtensionTest.php の最下部をこちらに完全に差し替えてください
+
+/* --- 🔐 Fortify Custom LoginResponse Pipeline Verification --- */
+
+test('login response: intercepts login and dynamically forces 409 conflict for expired users via inertia', function () {
+    $user = User::factory()->create([
+        'password' => Hash::make('AegisDemo@Password2026'),
+        'password_changed_at' => Carbon::now()->subDays(91),
+        'two_factor_secret' => null,
+        'two_factor_confirmed_at' => null,
+    ]);
+
+    // Route 1: Expired + Inertia Request
+    $response = $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'AegisDemo@Password2026',
+    ], ['X-Inertia' => 'true']);
+
+    $response->assertStatus(409);
+    $response->assertHeader('X-Inertia-Location', route('user.password-expired'));
+});
+
+test('login response: redirects to quarantine view for expired users via standard http request', function () {
+    $user = User::factory()->create([
+        'password' => Hash::make('AegisDemo@Password2026'),
+        'password_changed_at' => Carbon::now()->subDays(91),
+        'two_factor_secret' => null,
+        'two_factor_confirmed_at' => null,
+    ]);
+
+    // Route 2: Expired + Standard HTTP Request
+    $response = $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'AegisDemo@Password2026',
+    ]);
+
+    $response->assertStatus(302);
+    $response->assertRedirect(route('user.password-expired'));
+});
+
+test('login response: allows compliant users to log in normally and clear the custom response pipeline', function () {
+    $user = User::factory()->create([
+        'password' => Hash::make('AegisDemo@Password2026'),
+        'password_changed_at' => Carbon::now()->subDays(10),
+        'two_factor_secret' => null,
+        'two_factor_confirmed_at' => null,
+    ]);
+
+    // Route 3: Compliant + Standard HTTP Request
+    $response = $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'AegisDemo@Password2026',
+    ]);
+
+    $response->assertStatus(302);
+    $response->assertRedirect(config('fortify.home'));
+});
+
+test('login response: returns a structured json payload for compliant api login requests requesting json response templates', function () {
+    $user = User::factory()->create([
+        'password' => Hash::make('AegisDemo@Password2026'),
+        'password_changed_at' => Carbon::now()->subDays(10),
+        'two_factor_secret' => null,
+        'two_factor_confirmed_at' => null,
+    ]);
+
+    // Route 4: [Strategic Fix] Compliant + Wants JSON (Accept: application/json)
+    $response = $this->postJson('/login', [
+        'email' => $user->email,
+        'password' => 'AegisDemo@Password2026',
+    ]);
+
+    // Asserts the 200 OK structural json response template (Covers line 75 completely)
+    $response->assertStatus(200);
+    $response->assertJson(['two_factor' => false]);
+});
