@@ -231,4 +231,6 @@ These courtesy guidelines do not alter the Apache License terms and are provided
 
 _Developed under global financial security frameworks, prioritizing runtime reliability, architectural immutability, and zero-defect deployments._
 
+Note: Commits after September 2026 are 100% SSH-signed (Verified badge) as part of integrating enhanced remote OPSEC and code integrity standards shifting from private environments.
+
 <!-- cache bust: 20260830 -->
