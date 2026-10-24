@@ -203,6 +203,13 @@ Total: 100.0 %
 
 ---
 
+## 🛡️ Security & Auditing
+
+This project completely defended against the large-scale cyberattack and bot scanning on the platform side that occurred in October 2026.
+Please refer to the following for the detailed incident response log and the multi-layered defense audit report.
+
+👉 [Security Audit & Incident Recovery Report](./SECURITY_AUDIT_REPORT.md)
+
 ## License
 
 This project is licensed under the Apache License 2.0.

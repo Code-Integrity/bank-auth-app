@@ -1,0 +1,30 @@
+#!/bin/sh
+
+echo "🔒 [AegisBank-Auth-Core] Starting pre-commit Secret & DLP scanning..."
+
+# 1. ブロックする危険なキーワードやファイルパターンの定義
+# APP_KEY, AWS, Sentry, JWT, DBパスワードなどの一般的な形式を検知
+SECRET_PATTERN="((APP_KEY|SECRET|PASSWORD|TOKEN|KEY|PASSPHRASE|PRIVATE_KEY)[[:space:]]*=[[:space:]]*['\" ]*[a-zA-Z0-9_\+\/\=]{20,})|(-----BEGIN[A-Z ]*PRIVATE KEY-----)"
+
+# 2. コミットされようとしている（ステージングされた）ファイルの変更点をスキャン
+# ※ .env ファイルそのもののコミットや、コード内へのシークレット直書きを検知
+STAGED_FILES=$(git diff --cached --name-only)
+
+# .envファイル自体がステージングに含まれているかチェック
+if echo "$STAGED_FILES" | grep -E "^\.env$" >/dev/null 2>&1; then
+    echo "❌ [DLP Violation] DO NOT commit the '.env' file directly! Please add it to .gitignore."
+    exit 1
+fi
+
+# ステージングされたコードの中身に機密情報パターンが含まれているかチェック
+# (バイナリファイルや削除された行は除外)
+if git diff --cached | grep -E "^\+" | grep -E -v "^\+\+\+" | grep -E "$SECRET_PATTERN" >/dev/null 2>&1; then
+    echo "❌ [DLP Violation] Potential SECRET or APP_KEY exposure detected in your code changes!"
+    echo "👉 Please check your staged changes. Ensure secrets are referenced via env() and not hardcoded."
+    # 違反箇所を特定しやすくするために、該当行をターミナルに表示
+    git diff --cached | grep -E "^\+" | grep -E -v "^\+\+\+" | grep -E "$SECRET_PATTERN"
+    exit 1
+fi
+
+echo "✅ [DLP Scan Passed] No hardcoded secrets detected. Proceeding with commit."
+exit 0
