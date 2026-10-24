@@ -33,7 +33,7 @@ To guarantee an absolute 100% availability rate and shield our runtime cloud inf
 
 The live architecture operates in an isolated, stateless configuration to guarantee zero-data retention. You can bypass our defensive infrastructure gate and interact with the full authentication lifecycle instantly:
 
-- **Demo URL:** https://bank-auth-app-production.up.railway.app/
+- **Demo URL:** https://auth.aegis-labs-core.dev/
 - **Perimeter Infrastructure Gate (HTTP Basic Auth):**
     - **Username:** `aegis-guest`
     - **Password:** `SecurePreview2026`
