@@ -1,0 +1,22 @@
+#!/bin/sh
+
+echo "🛡️ [AegisBank-Auth-Core] Starting pre-push security & quality gates..."
+
+# 1. Run Laravel Pint for PER-CS linting check
+echo "🎨 Checking code style (Laravel Pint)..."
+./vendor/bin/sail bin php artisan pint --test
+if [ $? -ne 0 ]; then
+    echo "❌ [Security Gate Failed] Laravel Pint detected style violations. Please run './vendor/bin/sail bin php artisan pint' and try again."
+    exit 1
+fi
+
+# 2. Run Pest 3.x with 100% coverage gate
+echo "🧪 Running test suite & coverage gate (--min=100)..."
+./vendor/bin/sail bin php artisan test --coverage --min=100
+if [ $? -ne 0 ]; then
+    echo "❌ [Security Gate Failed] Tests failed or coverage is below 100.0%. Push aborted."
+    exit 1
+fi
+
+echo "✅ [Security Gate Passed] All local checks cleared. Proceeding with push."
+exit 0
