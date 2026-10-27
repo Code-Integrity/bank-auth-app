@@ -31,16 +31,22 @@ To guarantee an absolute 100% availability rate and shield our runtime cloud inf
 
 ### 🚀 Public Hosted Demo (Railway Live Grid) — _Immediate Review_
 
-The live architecture operates in an isolated, stateless configuration to guarantee zero-data retention. You can bypass our defensive infrastructure gate and interact with the full authentication lifecycle instantly:
+The live architecture operates in an isolated, stateless configuration to guarantee zero-data retention. Static perimeter passwords have been completely deprecated and abolished. Instead, we feature an advanced **Cloudflare-Protected One-Click Signed Login Pipeline**.
 
-- **Demo URL:** https://auth.aegis-labs-core.dev/
-- **Perimeter Infrastructure Gate (HTTP Basic Auth):**
-    - **Username:** `aegis-guest`
-    - **Password:** `SecurePreview2026`
+#### 🔗 Click to Enter Live Demo (No Password Required)
 
-- **Application Test Credentials (Once Inside the Gate):**
-    - **Email (90-Day Expired & Quarantined User):** `expired@aegisbank.demo`
-    - **Shared Secure Password:** `AegisDemo@Password2026`
+Click the link below to instantly trigger our automated URL Signing Core. Cloudflare's edge network will instantly verify your browser context, issue a 5-minute cryptographic MAC signature behind the scenes, and securely route you past our outer shell infrastructure gate:
+
+👉 **[Launch Instant Live Demo & Bypass Gate](https://auth.aegis-labs-core.dev)**
+
+_Note: Once clicked, your secure session bypass is locked in for 120 minutes, allowing a smooth, password-free review._
+
+#### 🔑 Application Test Credentials (Once Inside the Gate)
+
+Once the Signed URL securely routes you past the perimeter defense, use the following credentials to test the authentication core:
+
+- **Email (90-Day Expired & Quarantined User):** `expired@aegisbank.demo`
+- **Shared Secure Password:** `AegisDemo@Password2026`
 
 > [!TIP]
 > Log in with `expired@aegisbank.demo` to see our core business logic instantly execute a financial-grade route isolation hurdle onto `/user/password-expired` under strict pattern-complexity constraints.

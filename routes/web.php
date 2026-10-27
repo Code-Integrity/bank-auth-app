@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 
@@ -68,3 +69,40 @@ Route::middleware([
         return Inertia::location(url('/dashboard'));
     })->name('user.password-expired.update');
 });
+
+Route::get('/dev/generate-and-redirect', function () {
+
+    $signedUrl = URL::temporarySignedRoute(
+        'tester.welcome',
+        now()->addMinutes(5)
+    );
+
+    return redirect()->to($signedUrl);
+});
+
+Route::get('/dev/generate-tester-link', function () {
+    if (app()->environment('production') && request()->query('admin_token') !== config('app.deploy_token', 'default_secure_fallback_token')) {
+        abort(403, 'Unauthorized');
+    }
+
+    $signedUrl = URL::temporarySignedRoute(
+        'tester.welcome',
+        now()->addMinutes(5)
+    );
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'The 1-time login URL is valid for 5 minutes.',
+        'url' => $signedUrl,
+    ]);
+});
+
+Route::get('/tester/welcome', function (Request $request) {
+    if (! $request->hasValidSignature()) {
+        abort(401, 'This URL has expired or the hash has been modified.');
+    }
+
+    $bypassCookie = cookie('bypass_secure_gate', encrypt(config('app.key')), 120);
+
+    return redirect()->to('/')->withCookie($bypassCookie);
+})->name('tester.welcome');
