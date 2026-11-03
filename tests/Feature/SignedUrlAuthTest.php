@@ -34,12 +34,13 @@ class SignedUrlAuthTest extends TestCase
     /** @test */
     public function test_invalid_or_expired_signed_url_is_denied()
     {
-
         $invalidUrl = url('/tester/welcome?expires=12345&signature=invalid_hash');
 
         $response = $this->get($invalidUrl);
 
-        $response->assertStatus(401);
+        $response->assertStatus(302);
+        $response->assertRedirect('/');
+        $response->assertSessionHasErrors(['secure_gate']);
     }
 
     /** @test */

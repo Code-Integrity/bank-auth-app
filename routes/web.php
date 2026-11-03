@@ -98,8 +98,10 @@ Route::get('/dev/generate-tester-link', function () {
 });
 
 Route::get('/tester/welcome', function (Request $request) {
+
     if (! $request->hasValidSignature()) {
-        abort(401, 'This URL has expired or the hash has been modified.');
+        return redirect()->to('/')
+            ->withErrors(['secure_gate' => 'This URL has expired or the hash has been modified.']);
     }
 
     $bypassCookie = cookie('bypass_secure_gate', encrypt(config('app.key')), 120);
